@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   ClauseChain Design Tokens
+   ============================================================ */
+:root {
+  /* Brand / Accent */
+  --cc-teal-600: #0FB5A7;
+  --cc-teal-500: #14B8A6;
+  --cc-teal-400: #2DD4BF;
+  --cc-teal-200: #99F6E4;
+  --cc-teal-100: #CCFBF1;
+  --cc-teal-50:  #F0FDFA;
+
+  /* Neutrals */
+  --cc-ink-950: #0A0A0B;
+  --cc-ink-900: #18181B;
+  --cc-ink-800: #27272A;
+  --cc-ink-700: #3F3F46;
+  --cc-ink-600: #52525B;
+  --cc-ink-500: #71717A;
+  --cc-ink-400: #A1A1AA;
+  --cc-ink-300: #D4D4D8;
+  --cc-ink-200: #E4E4E7;
+  --cc-ink-100: #F4F4F5;
+  --cc-ink-50:  #FAFAFA;
+  --cc-white:   #FFFFFF;
+
+  /* Semantic */
+  --cc-success:    #10B981;
+  --cc-success-bg: #ECFDF5;
+  --cc-warning:    #F59E0B;
+  --cc-warning-bg: #FFFBEB;
+  --cc-danger:     #EF4444;
+  --cc-danger-bg:  #FEF2F2;
+  --cc-info:       #3B82F6;
+  --cc-info-bg:    #EFF6FF;
+
+  /* Shadows */
+  --cc-shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --cc-shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --cc-shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+  --cc-shadow-xl: 0 24px 64px rgba(0,0,0,0.12);
+
+  /* Type */
+  --cc-font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+  --cc-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+}
+
+/* ============================================================
+   ClauseChain Utility Classes
+   ============================================================ */
+
+/* Gradient text — hero titles only */
+.cc-gradient-text {
+  background: linear-gradient(135deg, #0FB5A7 0%, #14B8A6 35%, #06B6D4 70%, #2563EB 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Verbatim quote block */
+.cc-verbatim {
+  position: relative;
+  padding: 16px 20px;
+  background: var(--cc-teal-50);
+  border-left: 3px solid var(--cc-teal-600);
+  border-radius: 0 10px 10px 0;
+  font-family: var(--cc-font-mono);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--cc-ink-900);
+}
+.cc-verbatim::before {
+  content: "VERBATIM SPAN";
+  position: absolute;
+  top: -9px;
+  left: 16px;
+  background: var(--cc-teal-50);
+  padding: 0 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--cc-teal-600);
+}
+
+/* Verification chain gates */
+.cc-vchain {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 12px;
+  background: var(--cc-ink-50);
+  border: 1px solid var(--cc-ink-200);
+  border-radius: 10px;
+}
+
+/* Matrix */
+.cc-matrix-wrap { background: #fff; border: 1px solid var(--cc-ink-200); border-radius: 14px; overflow: hidden; }
+.cc-matrix-scroll { overflow-x: auto; }
+.cc-matrix { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; }
+.cc-matrix th, .cc-matrix td { border-right: 1px solid var(--cc-ink-100); border-bottom: 1px solid var(--cc-ink-100); }
+.cc-matrix-cell { height: 64px; width: 88px; position: relative; cursor: pointer; padding: 0; background: #fff; vertical-align: middle; text-align: center; }
+.cc-matrix-cell:hover { outline: 2px solid var(--cc-teal-500); outline-offset: -2px; z-index: 2; }
+.cc-cell-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 100%; width: 100%; }
+.cc-cell-verified { background: #ECFDF5; color: #047857; }
+.cc-cell-partial  { background: repeating-linear-gradient(45deg, #ECFDF5 0, #ECFDF5 6px, #D1FAE5 6px, #D1FAE5 12px); color: #047857; }
+.cc-cell-pending  { background: #FFFBEB; color: #B45309; }
+.cc-cell-rejected { background: #FEF2F2; color: #B91C1C; }
+.cc-cell-conflict { background: repeating-linear-gradient(45deg, #FEF2F2 0, #FEF2F2 6px, #FECACA 6px, #FECACA 12px); color: #B91C1C; }
+.cc-cell-none     { background: var(--cc-ink-50); color: var(--cc-ink-400); }
+
+/* Paper / document view */
+.cc-paper {
+  background: #FBFBFA;
+  border: 1px solid var(--cc-ink-200);
+  border-radius: 10px;
+  padding: 48px 56px;
+  font-family: "Times New Roman", "Times", serif;
+  color: #1F1F23;
+  font-size: 14.5px;
+  line-height: 1.65;
+  position: relative;
+  min-height: 100%;
+}
+.cc-clause-highlight { background: rgba(16,185,129,0.14); outline: 2px solid rgba(16,185,129,0.5); outline-offset: 2px; border-radius: 3px; scroll-margin-top: 80px; }
+.cc-clause-highlight.rejected { background: rgba(239,68,68,0.10); outline-color: rgba(239,68,68,0.5); }
+
+/* Outline node */
+.cc-outline-node {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 6px; cursor: pointer;
+  font-size: 13px; color: var(--cc-ink-700);
+  transition: background 150ms; border-left: 2px solid transparent; line-height: 1.35;
+}
+.cc-outline-node:hover { background: var(--cc-ink-100); color: var(--cc-ink-900); }
+.cc-outline-node.active { background: var(--cc-teal-50); color: var(--cc-teal-600); border-left-color: var(--cc-teal-600); font-weight: 500; }
+
+/* Live log */
+.cc-live-log {
+  background: var(--cc-ink-950); color: #E4E4E7;
+  font-family: var(--cc-font-mono); font-size: 12px; line-height: 1.6;
+  padding: 12px 16px; border-radius: 10px; max-height: 200px; overflow-y: auto;
+}
+
+/* Ledger row */
+.cc-ledger-row {
+  display: grid; grid-template-columns: 80px 1fr 220px 220px 100px;
+  gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--cc-ink-100);
+  cursor: pointer; align-items: center; font-size: 13px;
+  transition: background 150ms;
+}
+.cc-ledger-row:hover { background: var(--cc-ink-50); }
+
+/* Progress bar */
+.cc-progress { height: 6px; background: var(--cc-ink-200); border-radius: 999px; overflow: hidden; }
+.cc-progress > div { height: 100%; background: var(--cc-teal-600); border-radius: 999px; transition: width 150ms; }
+
+/* Chain step (provenance) */
+.cc-chain-step { display: flex; gap: 14px; position: relative; padding-bottom: 18px; }
+.cc-chain-step:not(:last-child)::before {
+  content: ""; position: absolute; left: 13px; top: 28px; bottom: -4px;
+  width: 2px; background: var(--cc-ink-200);
+}
+.cc-chain-bullet {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--cc-ink-100);
+  color: var(--cc-ink-700); display: grid; place-items: center; flex-shrink: 0;
+  z-index: 1; border: 2px solid #fff;
+}
+.cc-chain-bullet.pass { background: var(--cc-success-bg); color: var(--cc-success); }
+.cc-chain-bullet.fail { background: var(--cc-danger-bg); color: var(--cc-danger); }
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
