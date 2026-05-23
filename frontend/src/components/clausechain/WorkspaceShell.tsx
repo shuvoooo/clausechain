@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Table2, BookOpen, Globe, ChevronRight,
   Search, Bell, Settings, LogOut, Command,
-  Wifi, Layers, FileText, Cpu, GitBranch,
+  Wifi, Layers, FileText, Cpu, GitBranch, PackageOpen,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -17,11 +17,12 @@ const NAV_ITEMS = [
 ]
 
 const PIPELINE_ITEMS = [
-  { href: '/pipeline/crawl',    icon: Wifi,       label: 'Crawl Console' },
-  { href: '/pipeline/harvest',  icon: Layers,     label: 'Harvest Review' },
-  { href: '/pipeline/extract',  icon: FileText,   label: 'Extraction' },
-  { href: '/pipeline/map',      icon: Cpu,        label: 'Mapping Run' },
-  { href: '/pipeline/trace',    icon: GitBranch,  label: 'Source Trace' },
+  { href: '/pipeline/crawl',    icon: Wifi,        label: 'Crawl Console' },
+  { href: '/pipeline/harvest',  icon: Layers,      label: 'Harvest Review' },
+  { href: '/pipeline/extract',  icon: FileText,    label: 'Extraction' },
+  { href: '/pipeline/map',      icon: Cpu,         label: 'Mapping Run' },
+  { href: '/pipeline/trace',    icon: GitBranch,   label: 'Source Trace' },
+  { href: '/pipeline/export',   icon: PackageOpen, label: 'Export Output' },
 ]
 
 interface Crumb { label: string; href?: string }

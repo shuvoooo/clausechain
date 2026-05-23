@@ -10,7 +10,8 @@ const STEPS = [
   { id: 'ocr',      label: 'OCR',      href: '/pipeline/extract' },
   { id: 'embed',    label: 'Embed',    href: null                 },
   { id: 'map',      label: 'Map',      href: '/pipeline/map'     },
-  { id: 'verify',   label: 'Verify',   href: null                 },
+  { id: 'verify',   label: 'Verify',   href: '/pipeline/trace'   },
+  { id: 'export',   label: 'Export',   href: '/pipeline/export'  },
 ]
 
 interface PipelineStepperProps {
