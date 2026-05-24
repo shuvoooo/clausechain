@@ -12,8 +12,34 @@
 | Initiative | UN Global Hackathon: AI for Digital Trade Regulatory Analysis |
 | Framework | UN Regional Digital Trade Integration Index (RDTII) v2.1 |
 | Mandatory scope | Pillar 6: Cross-Border Data Policies; Pillar 7: Domestic Data Protection and Privacy |
-| License target | Apache 2.0 codebase; documented third-party model licenses |
+| Bonus scope | RDTII Pillar 8 (Cybersecurity), Pillar 9 (Digital identity), Pillar 12 (Content) — finals only |
+| Demo instruments | SG PDPA 2012 (rev. 2021) ss. 13, 17, 26(1); TH PDPA B.E. 2562 (2019) ss. 26–29; BD DSA 2018 s. 26 + Draft PDPA 2023 |
+| Model routing | Local-first (vLLM + Qwen/Llama family) with optional per-task cloud routing to OpenAI or Anthropic |
+| Minimum footprint | 1× L40S 48 GB / 64 GB RAM / 500 GB SSD (local mode) · or CPU-only + cloud APIs (laptop mode) |
+| License target | Apache 2.0 codebase; documented third-party model licenses (matrix in §21) |
 | Core thesis | Verified citation is necessary but not sufficient. ClauseChain verifies citation, authority, currentness, legal structure, predicate meaning, and counter-evidence before producing an RDTII mapping. |
+
+---
+
+## 0. Executive Snapshot
+
+**Problem.** Regulatory mapping for digital trade is still largely manual. Generic RAG quotes the right words from the wrong source, misses exceptions, and treats guidelines as binding law. In legal and policy work, these errors are not acceptable.
+
+**Solution.** ClauseChain is an open-source, self-hostable pipeline that turns scattered legal materials into reviewable RDTII evidence. It verifies six things before any output ships: the exact span, the source authority, the current-law status, the legal structure, the predicate meaning, and the absence of counter-evidence.
+
+**Three differentiators.**
+
+1. **Predicate tuple, not free-text classification.** The model extracts a structured legal predicate (actor / action / object / modality / condition / exception) and only then maps to RDTII. Rubric checks run on the tuple, not on prose.
+2. **Eight verification gates (G1–G8).** Span, location, authority, currentness, structure, tuple support, RDTII predicate support, and counter-evidence search. Any failure rejects or routes to human review.
+3. **Per-stage measured accuracy.** Discovery recall, OCR CER, section-boundary F1, retrieval recall@k, tuple field accuracy, macro-F1, citation exactness, and abstention calibration — all reported with confidence intervals.
+
+**Demo coverage.** Singapore (clean HTML benchmark), Thailand (bilingual rule/exception), Bangladesh (scanned OCR + status-conflict stress). English, Thai, Bengali.
+
+**Deployment modes.** (1) **Local** — vLLM + Qwen / Llama on a single L40S. (2) **Cloud** — OpenAI or Anthropic per-task routing, no GPU required. (3) **Hybrid** — local for embeddings and OCR, cloud for high-stakes classification and verification. All target documents are public legal text scraped from official portals, so operators may choose any mix without privacy risk to data subjects. Provider routing is configurable per pipeline task (§6.4.1).
+
+**Headline targets (prototype).** Discovery recall@20 ≥ 0.90 · Retrieval recall@20 ≥ 0.90 · Pillar macro-F1 ≥ 0.75 · Citation exact-match ≥ 0.95 · Calibrated abstention beats no-abstention baseline.
+
+**Repository.** Apache 2.0 code; model weights retain their own licenses (matrix in §21). Reproducible benchmark, provenance bundle, and Docker Compose ship in-repo. Working UI prototype at `/pipeline/{crawl,harvest,extract,map,trace,export}`.
 
 ---
 
@@ -90,6 +116,10 @@ AI can accelerate the work, but generic RAG is not enough. A system can quote th
 
 ClauseChain's objective is to automate the evidence compilation workflow while preserving legal reviewability. It increases analyst capacity by collecting candidate sources, extracting structured legal text, identifying likely RDTII evidence, and producing machine-readable outputs. It reduces risk by measuring each stage, abstaining under uncertainty, and exposing every claim to human audit with source status and counter-evidence visible.
 
+### 3.4 Where ClauseChain Sits in the Landscape
+
+Commercial legal-AI products (LexisNexis Protégé, Harvey, Spellbook, Casetext) are built for litigation, contracts, and law-firm workflows; they do not produce RDTII-shaped, jurisdiction-graphed, currentness-verified evidence and they are closed-source. Open RAG stacks (LangChain templates, llama-index legal demos, Verba) retrieve and cite, but stop at citation — they do not verify authority, currentness, or counter-evidence and they treat all retrieved chunks as equally authoritative. Government RegTech tooling (OECD i-Reg, World Bank Privacy Data Protection trackers, UNCTAD CyberLaws) curates indicators by hand and does not extract from source documents. ClauseChain occupies the gap: open-source, self-hostable, RDTII-native, with measurable per-stage accuracy, predicate-tuple verification, and an evidence ledger that lets every output be reconstructed from raw bytes.
+
 ---
 
 ## 4. Scope and Demo Strategy
@@ -114,11 +144,13 @@ The system should not try to prove everything at once. It should prove capabilit
 
 ### 4.3 Target Jurisdictions
 
-| Jurisdiction | Role in demo | Source types | Notes |
+| Jurisdiction | Role in demo | Anchor instruments | Source types |
 |---|---|---|---|
-| Singapore | Clean benchmark and full end-to-end flow | Official HTML, official PDF, regulator guidance | Strong for demonstrating exact structure and citations |
-| Thailand | Host-country relevance and bilingual legal text | Official gazette PDFs, regulator pages, Thai/English materials | Strong for multilingual and rule/exception logic |
-| Bangladesh | Hard technical stress case and regional relevance | HTML laws, PDFs, scanned materials, draft/current-status challenges | Strong for OCR, source status, and developing-economy relevance |
+| Singapore | Clean benchmark, full end-to-end flow, currentness baseline | PDPA 2012 (rev. 2021) ss. 13, 17, 26(1); Cybersecurity Act 2018; PDPC Advisory Guidelines on Key Concepts | `sso.agc.gov.sg` official HTML + PDF; `pdpc.gov.sg` regulator guidance |
+| Thailand | Bilingual rule/exception, gazette PDFs, conditional-transfer regime | PDPA B.E. 2562 (2019) ss. 26, 27–29, 41; PDPC subordinate notifications 2022–2024 | `ratchakitcha.soc.go.th` gazette PDFs; `pdpc.or.th` regulator pages (Thai + English) |
+| Bangladesh | OCR stress, status conflict, draft handling, developing-economy relevance | DSA 2018 s. 26 (data localization); Draft PDPA 2023 (consultation); ICT Act 2006 amendments | `bdlaws.minlaw.gov.bd` HTML/PDF; `mopa.gov.bd` gazette scans (Bengali + English) |
+
+Every demo claim cites the *specific instrument and section* above. Singapore is the precision baseline (clean HTML, English, current consolidated text). Thailand exercises the rule/exception verifier on bilingual text. Bangladesh exercises OCR, source-status conflict (draft vs. current vs. amended), and Bengali multilingual retrieval.
 
 ### 4.4 In Scope
 
@@ -265,7 +297,89 @@ Default deployment is self-hosted:
 | Pipeline framework | FastAPI services + explicit DAG workers | Haystack/LangGraph adapters where useful | Keeps components testable and swappable |
 | Schema enforcement | Pydantic + JSON schema / Outlines | Instructor-style validators | Prevents free-form unsupported claims |
 
-Important license note: ClauseChain code is Apache 2.0. Model weights and third-party tools retain their own licenses and are listed in a `MODEL_LICENSES.md` file.
+Important license note: ClauseChain code is Apache 2.0. Model weights and third-party tools retain their own licenses; the full matrix is documented in §21 and shipped as `MODEL_LICENSES.md`.
+
+### 6.4.1 Cloud LLM Routing (Optional)
+
+ClauseChain's default stack is local-first because it must run inside government and institutional environments. However, **every target document in the demo set is public legal text scraped from official portals** — there is no personally identifiable information, no privileged content, and no privacy concern in routing the text through a third-party API. Operators may therefore configure any pipeline task to use a cloud LLM provider instead of (or alongside) the local model. Provider choice is restricted to **OpenAI** and **Anthropic** to keep the auditable surface small.
+
+**Per-task provider matrix:**
+
+| Pipeline task | Local default | OpenAI cloud option | Anthropic cloud option | Default routing |
+|---|---|---|---|---|
+| Crawl / HTML / PDF extraction | Scrapy · Trafilatura · Docling | n/a | n/a | always local (deterministic) |
+| OCR text + bbox | PaddleOCR-VL / PaddleOCR | n/a | n/a | always local (coordinate-native) |
+| OCR hard-region repair (VLM) | Qwen2-VL-7B | `gpt-4o` (vision) | `claude-sonnet-4-6` (vision) | confidence-threshold |
+| Embeddings (multilingual) | BGE-M3 / Qwen3-Embedding | `text-embedding-3-large` · `text-embedding-3-small` | *not available — Anthropic does not host an embedding API* | always local |
+| Reranking | BGE-reranker-v2-m3 / Qwen3-Reranker | `gpt-4o` (LLM-as-judge) | `claude-sonnet-4-6` (LLM-as-judge) | always local |
+| Legal predicate extraction | Qwen2.5-7B / Llama-3.1-8B-Instruct | `gpt-4.1` · `gpt-4o` | `claude-sonnet-4-6` · `claude-opus-4-7` | confidence-threshold |
+| RDTII mapping | Qwen2.5-7B | `gpt-4.1` | `claude-sonnet-4-6` | confidence-margin |
+| Entailment / NLI verifier (Gate G6/G7) | DeBERTa-v3 multilingual NLI | `gpt-4o` | `claude-sonnet-4-6` | always local |
+| Counter-evidence search (Gate G8) | Local LLM + retrieval | `gpt-4o` | `claude-sonnet-4-6` | confidence-threshold |
+| Review-time explanation generation | Qwen2.5-7B | `gpt-4.1` | `claude-sonnet-4-6` | operator-controlled |
+
+**Honest note on Anthropic embeddings.** Anthropic does not currently expose a hosted embedding API; it recommends Voyage AI. Operators wanting an Anthropic-aligned cloud stack should pair Claude for LLM tasks with OpenAI `text-embedding-3-large` for embeddings, or run BGE-M3 locally. ClauseChain does not depend on this in the default path.
+
+**Routing modes.** Each task supports four routing modes:
+
+| Mode | Behavior |
+|---|---|
+| `always_local` | Cloud disabled for this task even if configured globally |
+| `always_cloud` | Skip local model and call the configured provider directly |
+| `confidence_threshold` | Run local first; escalate to cloud if local confidence < configured threshold |
+| `confidence_margin` | Run local first; escalate if score margin between top-1 and top-2 candidates < threshold |
+
+**Configuration schema (`configs/models.yaml`):**
+
+```yaml
+mode: hybrid                  # local-only | cloud-only | hybrid
+cloud_consent:
+  acknowledged: true          # operator confirms public-document scope
+  data_residency_note: "Public legal text from official portals only"
+
+providers:
+  openai:
+    api_key_env: OPENAI_API_KEY
+    base_url: https://api.openai.com/v1
+  anthropic:
+    api_key_env: ANTHROPIC_API_KEY
+    base_url: https://api.anthropic.com
+
+tasks:
+  ocr_vlm_repair:
+    routing: confidence_threshold
+    local:  { model: Qwen2-VL-7B }
+    cloud:  { provider: anthropic, model: claude-sonnet-4-6 }
+    trigger: { ocr_confidence_below: 0.75 }
+
+  embedding:
+    routing: always_local
+    local:  { model: BGE-M3 }
+    cloud:  { provider: openai, model: text-embedding-3-large }
+
+  predicate_extraction:
+    routing: confidence_threshold
+    local:  { model: Qwen2.5-7B-Instruct }
+    cloud:  { provider: anthropic, model: claude-sonnet-4-6 }
+    trigger: { local_confidence_below: 0.65 }
+
+  rdtii_mapping:
+    routing: confidence_margin
+    local:  { model: Qwen2.5-7B-Instruct }
+    cloud:  { provider: anthropic, model: claude-sonnet-4-6 }
+    trigger: { score_margin_below: 0.15 }
+```
+
+**Audit invariants preserved under cloud routing.** Switching a task to cloud does **not** loosen the verification gates. The same G1–G8 checks run on the cloud output. The provenance ledger records, for every claim:
+
+- which model produced the predicate tuple (`local:Qwen2.5-7B` or `cloud:anthropic:claude-sonnet-4-6`),
+- the routing decision and trigger value that caused escalation,
+- the request/response hash for cloud calls (no payload is stored when `cloud_consent.persist_payloads: false`),
+- the per-token or per-call cost estimate for budget tracking.
+
+**Restricted-content guard.** If a document is tagged in the jurisdiction pack as `restricted` (e.g. internal regulator drafts shared under NDA), cloud routing is refused for that document regardless of operator config; only local models may process it. Default for all hackathon demo documents is `public`.
+
+**Cost control.** Operators set a per-run cloud budget cap (e.g. USD 2.00 / run). When the cap is reached, all routing modes fall back to local; the run continues without cloud escalation and the cap event is logged.
 
 ### 6.5 Repository and Runtime Skeleton
 
@@ -325,6 +439,10 @@ Docker Compose services:
 | `/claims/{id}/verify` | POST | Run verification gates |
 | `/reviews/{claim_id}` | POST | Record human review decision |
 | `/exports/{project_id}` | GET | Download JSONL/CSV/provenance bundle |
+| `/models/providers` | GET | List available providers (local, openai, anthropic) and discovered models |
+| `/models/routing` | GET | Return current per-task routing config |
+| `/models/routing` | PUT | Update per-task routing (mode, provider, model, thresholds, budget cap) |
+| `/models/usage` | GET | Per-run cost report: local GPU-seconds, cloud tokens, cloud spend by provider |
 
 ---
 
@@ -692,6 +810,21 @@ The Cite-Verify-Reject principle remains embedded inside these gates:
 - Verify: span, structure, authority, tuple, and RDTII entailment.
 - Reject: unsupported outputs do not ship.
 
+**Gate thresholds (prototype defaults, configurable per jurisdiction pack):**
+
+| Gate | Pass threshold | Review threshold | Reject threshold | Notes |
+|---|---|---|---|---|
+| G1 Span | exact byte/char match | edit distance 1–3 on OCR regions only | edit distance > 3, or no match | OCR fuzzy must be tagged with `ocr_confidence` and original image |
+| G2 Location | bbox IoU ≥ 0.85 or section path match | IoU 0.50–0.85 | IoU < 0.50 or section unresolved | |
+| G3 Authority | authority_rank ≤ 5 (binding tier) | rank 6–7 (guideline) when used as binding evidence | rank 8–9 (unofficial / blog) | Non-binding context allowed in audit view but cannot drive final claim |
+| G4 Currentness | `status = binding_current` AND not within 14 days of an open amendment | `consolidated_text_age > 365 days` OR amendment pending | `status ∈ {repealed, draft, superseded}` for binding claim | |
+| G5 Structure | role matches expected (principal_rule, exception, etc.) | role uncertain | rule unit incomplete (exception missing) | |
+| G6 Tuple | NLI entailment ≥ 0.70 across all populated fields | 0.50–0.70 | < 0.50 | Multilingual NLI; per-field score logged |
+| G7 RDTII | All required predicates present AND no exclusion triggered | required predicate ambiguous | required predicate missing OR exclusion triggered | Rubric-as-code; deterministic before LLM |
+| G8 Counter-evidence | no repeal/amendment/conflict found; OR found but ledger marks `superseded_by` correctly | conflict found, automatic resolution uncertain | direct contradiction with higher-rank current source | Route to review even if other gates passed |
+
+A claim's `final_status` is `verified` only when all gates that apply to its class are `pass`. Any `review` routes the claim to human queue; any `reject` blocks export.
+
 ### 8.10 Stage 10 - Human Audit, Learning, and Export
 
 **Goal:** Make review fast and transform corrections into measurable improvement.
@@ -1007,6 +1140,52 @@ Validation rules:
 - Source URL must either be retrievable or preserved in the provenance bundle.
 - Unsupported claims are removed before export; if removal changes the legal conclusion, the whole mapping is blocked or sent to review.
 
+**OCR fuzzy-match citation example** (Bangladesh scanned amendment, Bengali source):
+
+```json
+{
+  "evidence_id": "ev_bd_dsa_26_1_ocr",
+  "source_url": "https://bdlaws.minlaw.gov.bd/act-1261.pdf",
+  "retrieved_at": "2026-05-23T09:12:24+06:00",
+  "source_type": "official_legislation_scanned_pdf",
+  "jurisdiction": "BD",
+  "instrument_title": "Digital Security Act 2018",
+  "version_or_effective_date": "2018-10-08 (in force)",
+  "article_section_paragraph": "section 26(1)",
+  "page_number": 14,
+  "bbox": { "x0": 72, "y0": 412, "x1": 540, "y1": 488, "page_width": 612, "page_height": 792 },
+  "quote": "Any person who, intentionally or knowingly without lawful authority, collects, sells, takes possession of, supplies or uses any person's identity-related information, shall not save such data, including biometric information, photographs, financial records or registry information, outside the geographic boundaries of Bangladesh.",
+  "quote_char_start": 18742,
+  "quote_char_end": 19103,
+  "source_sha256": "9f2c4e8a1b...d3e7",
+  "span_sha256": "a73b2f1c8e...0d9a",
+  "match_type": "fuzzy",
+  "ocr": {
+    "engine_primary":  "PaddleOCR-VL",
+    "engine_secondary": "Tesseract",
+    "vlm_repair_engine": "cloud:anthropic:claude-sonnet-4-6",
+    "ocr_confidence": 0.77,
+    "edit_distance": 2,
+    "disagreements_resolved": 4,
+    "original_image_url": "/storage/runs/run-BD-001/pages/BD-DSA-2018-p14.png"
+  },
+  "authority_rank": "binding_primary_law",
+  "verification_status": "verified",
+  "gate_results": {
+    "G1_span": "pass (fuzzy, edit_distance=2)",
+    "G2_location": "pass (bbox IoU=0.91)",
+    "G3_authority": "pass",
+    "G4_currentness": "pass",
+    "G5_structure": "pass",
+    "G6_tuple": "pass (NLI=0.88)",
+    "G7_rdtii": "pass",
+    "G8_counter_evidence": "none_found"
+  }
+}
+```
+
+This is the path that ClauseChain's OCR rigor was built for: a scanned Bengali statute, two OCR engines disagreeing, a VLM repair pass (here using cloud Claude per operator config), and every choice logged so a reviewer can re-verify against the original page image.
+
 ### 12.4 Export Formats
 
 | Export | Purpose |
@@ -1145,6 +1324,8 @@ Right pane:
 - Counter-evidence.
 - Approve/edit/reject/uncertain controls.
 
+**Working UI prototype.** A Next.js 16 / React 19 prototype of the audit surface is in-repo and runs at `/pipeline/{crawl, harvest, extract, map, trace, export}`. The Source Trace route (`/pipeline/trace`) implements the dual-panel layout above with synchronized scroll, span popovers (per-gate dot, verbatim snippet, confidence, match type), and a coverage summary bar. The Mapping Run route (`/pipeline/map`) implements the L0–L3 autonomy selector, CVR-loop streaming, and rejection inspector. The Export route (`/pipeline/export`) implements the machine-readable output described in §12. The prototype uses mock pipeline data; backend wiring is part of Round 1.
+
 ### 14.3 Reviewer Decisions
 
 Reviewer actions:
@@ -1182,18 +1363,19 @@ Every claim should display compact status badges so a reviewer can scan risk qui
 
 ### 15.1 Must Have for Application Prototype
 
-- Create jurisdiction packs for SG, TH, and BD with official source domains and authority hierarchy.
-- Ingest at least one clean official HTML source end to end.
-- Ingest at least one scanned or image-based legal page and produce text plus bbox/confidence.
-- Build legal node tree for at least one full instrument.
-- Build rule units for provisions containing exceptions/conditions.
-- Implement hybrid retrieval plus reranking over rule units.
-- Implement legal predicate tuple extraction.
-- Implement RDTII mapping for Pillars 6 and 7.
-- Implement verification gates G1-G8 at least in prototype form.
-- Export JSONL and CSV records.
-- Provide benchmark script with at least a small labeled set and metrics.
-- Provide audit UI or recorded UI prototype showing span, source status, tuple, gates, and reviewer action.
+- Jurisdiction packs for SG, TH, and BD with ≥ 5 official source domains each and a complete authority hierarchy.
+- Ingest **≥ 3 official HTML sources** end to end (one per jurisdiction); at minimum SG PDPA 2012, TH PDPA B.E. 2562, BD DSA 2018.
+- Ingest **≥ 1 scanned legal page per jurisdiction** with text + bbox + per-token OCR confidence emitted.
+- Build legal node tree for **at least one full instrument per jurisdiction** (target: SG PDPA, TH PDPA, BD DSA).
+- Build rule units for **≥ 10 provisions containing exceptions/conditions** across the three jurisdictions.
+- Hybrid retrieval (BM25 + multilingual dense) plus reranking, with retrieval recall@20 ≥ 0.85 on the prototype benchmark.
+- Legal predicate tuple extraction with **field-level accuracy ≥ 0.75** on the prototype benchmark.
+- RDTII mapping for Pillars 6 and 7 with **macro-F1 ≥ 0.70** on a ≥ 50-example labeled benchmark.
+- Verification gates G1–G8 implemented and exercised by every shipped claim.
+- Export JSONL, CSV, and provenance bundle; outputs re-verifiable from raw bytes.
+- Reproducible benchmark script with ≥ 50 labeled examples (≥ 10 negatives, ≥ 5 OCR fuzzy cases, ≥ 5 amendment/repeal cases) and per-stage metrics with bootstrap confidence intervals.
+- Working audit UI (already prototyped at `/pipeline/*`) showing span, source status, tuple, gates, and reviewer action.
+- Model routing config (§6.4.1) operational with at least `always_local` and one cloud provider tested end-to-end.
 
 ### 15.2 Should Have for Round 1
 
@@ -1229,22 +1411,28 @@ Every claim should display compact status badges so a reviewer can scan risk qui
 | Accessibility | Audit UI targets WCAG 2.1 AA |
 | Observability | Stage metrics, logs, and failure reasons are visible |
 | Determinism | Schema validation, pinned model versions, and fixed eval scripts |
+| Provider agnosticism | Local, OpenAI-cloud, Anthropic-cloud, and hybrid modes all produce identical schema; gates run regardless of producer |
+| Cost control | Per-run cloud budget cap; automatic fallback to local when cap reached; cost report per task and per provider |
+| Operator consent | Cloud routing requires explicit `cloud_consent.acknowledged: true`; restricted-tier documents refuse cloud regardless |
+| Audit completeness | Every claim's ledger entry records model identity (local/cloud + provider + version), routing decision, and trigger value |
 
 ---
 
-## 17. Technical Memo Draft
+## 17. Technical Memo (One Page)
 
-ClauseChain is a measured legal evidence compiler for mapping digital trade regulation to RDTII Pillars 6 and 7. The system is built around the premise that citation verification alone is not enough: a quoted span may be real but legally wrong if it comes from a repealed act, a non-binding guideline, an unofficial translation, or a clause whose exception changes the rule. ClauseChain therefore verifies not only the quote, but also source authority, current-law status, legal structure, predicate meaning, and counter-evidence.
+ClauseChain is an open-source pipeline that maps digital trade regulation to RDTII Pillars 6 and 7 with reviewable, evidence-based outputs. Its core premise is that citation verification is necessary but not sufficient: a real quote can come from a repealed act, a non-binding guideline, an unofficial translation, or a clause whose exception changes the rule. ClauseChain verifies the whole evidence chain — span, source authority, current-law status, legal structure, predicate meaning, and counter-evidence — before any output ships.
 
-The architecture is a staged pipeline. A jurisdiction pack defines official sources, authority hierarchy, citation patterns, language settings, and RDTII rubric bindings. Discovery crawls official statute databases, gazettes, regulator sites, and ministry portals using Scrapy/Playwright/Crawl4AI with polite crawling and manual fallback. Acquisition stores raw source bytes, hashes, timestamps, HTTP metadata, and rendered page images. The authority resolver classifies sources as binding, guideline, draft, repealed, consolidated, amendment, or translation, and builds a graph of amendment and current-law relationships.
+**Pipeline.** Per-jurisdiction packs define official source domains, authority hierarchies, citation patterns, language settings, and RDTII rubric bindings. Discovery crawls official statute databases, gazettes, and regulator portals (Scrapy + Playwright + Crawl4AI). Acquisition preserves raw bytes, SHA-256, HTTP metadata, and rendered page images. The authority resolver classifies each source as binding, guideline, draft, repealed, consolidated, amendment, or translation, and builds a current-law graph. Extraction routes HTML, native PDF, and scanned PDF through Trafilatura / Docling / PaddleOCR-VL with VLM repair on hard regions only. The legal parser produces a section tree and builds rule units that bind principal rules to their exceptions, conditions, definitions, and cross-references.
 
-Extraction routes HTML, native PDF, and scanned PDF through specialized pipelines. Trafilatura and custom DOM parsing handle official HTML; Docling and PyMuPDF handle born-digital PDFs; PaddleOCR/coordinate-native OCR provides text and bounding boxes for scanned pages, with Tesseract/OCRmyPDF as deterministic fallback and vision-language models used only for hard-region repair. The legal parser reconstructs a section tree and builds rule units that keep principal rules, exceptions, conditions, definitions, and cross-references together.
+**Mapping.** Retrieval is hybrid sparse + dense (OpenSearch BM25 + Qdrant / pgvector, BGE-M3 or Qwen3-Embedding, cross-encoder reranking). Before any classification, the model extracts a structured legal predicate tuple (actor / action / object / destination / modality / condition / exception / source-status). RDTII mapping then runs rubric-as-code deterministic checks plus a constrained classification call.
 
-Retrieval uses hybrid sparse and dense search: OpenSearch/BM25 for exact legal terms, Qdrant or pgvector for dense vectors, multilingual embeddings such as Qwen3-Embedding or BGE-M3, and Qwen/BGE rerankers for candidate precision. Instead of asking a model to classify directly, ClauseChain first extracts a structured legal predicate tuple: actor, action, object, destination, modality, condition, exception, and source status. RDTII mapping is then performed by rubric-as-code checks plus constrained model classification through a local Qwen/Llama-family model served by vLLM.
+**Model routing.** Default stack is local-first on vLLM (Qwen / Llama family). Operators can route any LLM-bearing task to **OpenAI** or **Anthropic** via per-task configuration (`always_local`, `always_cloud`, `confidence_threshold`, `confidence_margin`). Anthropic does not host an embedding API, so embeddings via cloud means OpenAI; this is documented honestly. Cloud routing requires explicit operator consent, respects a per-run budget cap, and writes the model identity into the provenance ledger.
 
-Verification applies eight gates: span match, location, authority, currentness, structure, tuple support, RDTII predicate support, and counter-evidence search. Claims that fail are rejected or routed to human review. The Evidence Ledger records support, qualification, amendment, conflict, and review edges so every final claim can be reconstructed. Outputs include JSONL, CSV matrix records, Markdown/HTML reports, and a provenance bundle.
+**Verification.** Eight gates (G1 span, G2 location, G3 authority, G4 currentness, G5 structure, G6 tuple, G7 RDTII, G8 counter-evidence). Each has a `pass / review / reject` threshold (§8.9). A claim's `final_status` is `verified` only when every applicable gate passes; any failure rejects or routes to human review.
 
-Accuracy is measured stage by stage: discovery recall@k, authority precision, OCR error rate, section-boundary F1, retrieval recall@20, tuple accuracy, macro-F1, citation accuracy, current-law-status accuracy, and abstention calibration. A reproducible benchmark pack with positive, negative, OCR, amendment, guideline, and repealed-law examples is included so reviewers can verify the system's claims.
+**Evidence.** Outputs ship as JSONL, CSV matrix, Markdown report, and a provenance bundle. Every record is reconstructable from raw bytes: source URL, hash, section, page, char offsets, bbox (where available), OCR engine and confidence, predicate tuple, gate results, and model identity.
+
+**Accuracy.** Per-stage metrics with bootstrap confidence intervals: discovery recall@20, authority precision, OCR CER, section-boundary F1, retrieval recall@20, tuple field accuracy, pillar macro-F1, citation exact-match, and abstention calibration. Five baselines included (naive LLM, standard RAG, ClauseChain minus authority gate, ClauseChain minus tuple, full ClauseChain) so judges can see which architectural pieces actually move accuracy.
 
 ---
 
@@ -1330,14 +1518,123 @@ ClauseChain is Round-1-ready when:
 
 ---
 
+## 21. Model License & Provider Matrix
+
+ClauseChain's source code is Apache 2.0. **Model weights and third-party APIs retain their own licenses.** This matrix is what operators consult before deploying — it answers "can I use this commercially, self-host it, redistribute it?" up front.
+
+### 21.1 Local model licenses
+
+| Model | License | Commercial use | Redistribution | Notes |
+|---|---|---|---|---|
+| Qwen2.5-7B-Instruct | Apache 2.0 | Yes | Yes | Default classifier and predicate extractor |
+| Qwen2-VL-7B | Apache 2.0 | Yes | Yes | Default OCR VLM repair |
+| Qwen3-Embedding | Apache 2.0 | Yes | Yes | Optional high-accuracy embedding |
+| Qwen3-Reranker | Apache 2.0 | Yes | Yes | Optional reranker |
+| Llama-3.1-8B-Instruct | Llama Community License | Yes (with attribution) | Conditional | Not OSI-approved; >700M MAU triggers separate Meta license |
+| BGE-M3 | MIT | Yes | Yes | Default multilingual embedding |
+| BGE-reranker-v2-m3 | MIT | Yes | Yes | Default reranker |
+| DeBERTa-v3 multilingual NLI | MIT (base) + dataset license | Yes | Yes | Check fine-tune dataset (often MultiNLI / XNLI) |
+| PaddleOCR-VL / PaddleOCR | Apache 2.0 | Yes | Yes | Default OCR |
+| Tesseract | Apache 2.0 | Yes | Yes | OCR fallback |
+| Docling | MIT | Yes | Yes | PDF extraction |
+| Trafilatura | Apache 2.0 | Yes | Yes | HTML extraction |
+| Crawl4AI | Apache 2.0 | Yes | Yes | AI-friendly crawler |
+| vLLM | Apache 2.0 | Yes | Yes | Model server |
+
+**ClauseChain's default model stack is fully commercial-grade and self-hostable.** The only model that carries non-OSI terms is Llama-3.1, and Qwen2.5-7B is the recommended drop-in replacement for any operator who wants a pure-Apache stack.
+
+### 21.2 Cloud provider terms
+
+| Provider | API | Data handling default | Operator must review |
+|---|---|---|---|
+| OpenAI | `api.openai.com` | API requests are *not* used to train models (since 2023 policy); 30-day retention for abuse monitoring | Enterprise / Zero-Data-Retention agreement if required |
+| Anthropic | `api.anthropic.com` | API requests are *not* used to train models; no long-term retention by default | Anthropic Enterprise terms if required |
+
+Both providers are SOC 2 Type II. Both publish data-handling commitments. Neither hosts ClauseChain — they receive only the specific text the operator routes to them per `configs/models.yaml`. Operators who must guarantee zero-cloud-egress should use `mode: local-only`.
+
+### 21.3 Provider-routing decision aid
+
+| Operator profile | Recommended mode | Why |
+|---|---|---|
+| Government / regulator with data-residency mandate | `local-only` | No external network egress; all weights self-hosted; deterministic |
+| Research lab, NGO, academic | `hybrid` (local default, cloud for low-confidence escalation) | Best accuracy-per-dollar; local for bulk, cloud for edge cases |
+| Hackathon judge / individual analyst | `cloud-only` with Anthropic Claude | No GPU required; runs on a laptop; predictable cost |
+| Production analyst team | `hybrid` with budget cap | Local for embedding and OCR (cheap, fast at scale); cloud for predicate extraction and counter-evidence |
+
+---
+
+## 22. Hardware Footprint & Operating Modes
+
+### 22.1 Reference deployments
+
+| Mode | Hardware | What runs locally | What runs cloud | Approx. cost / run* |
+|---|---|---|---|---|
+| **Local-only (recommended for government)** | 1× NVIDIA L40S 48 GB · 64 GB RAM · 500 GB SSD | All models (vLLM serving Qwen2.5-7B + BGE-M3 + DeBERTa-NLI + Qwen2-VL-7B) | None | $0 marginal; ~$0.50 amortized GPU-hour |
+| **Local-lean** | 1× RTX 4090 24 GB · 32 GB RAM · 250 GB SSD | Qwen2.5-7B-Q4 quantized + BGE-M3 + Tesseract | OCR VLM repair only | ~$0.10 / run cloud |
+| **Hybrid (recommended for analysts)** | 1× RTX 4090 24 GB · 32 GB RAM | OCR + embeddings + reranking + NLI | Predicate extraction, RDTII mapping (low-confidence only), counter-evidence | $0.30–$0.80 / run |
+| **Cloud-only (laptop mode)** | 16 GB MacBook / equivalent · no GPU | Crawl, HTML/PDF extraction, deterministic OCR (Tesseract), rubric checks | All LLM tasks, all VLM tasks, OpenAI embeddings | $1.50–$4.00 / run |
+
+*Cost estimate based on Anthropic Claude Sonnet 4.6 input pricing at ~$3/MTok and OpenAI `gpt-4o` at ~$2.50/MTok input as of 2026-05; one "run" = one jurisdiction full pipeline over ≈ 20 instruments. Operator budget cap enforced.
+
+### 22.2 Storage budget
+
+- Raw source bytes: ≈ 200 MB per jurisdiction (HTML + PDF + scans).
+- Rendered page images: ≈ 50 MB per scanned instrument.
+- Extracted text + layout JSON: ≈ 20 MB per instrument.
+- Vector index (BGE-M3 over rule units): ≈ 50 MB per 10 k chunks.
+- Provenance bundle (export): ≈ 80 MB per jurisdiction full run.
+
+**Total for SG+TH+BD prototype: well under 5 GB.**
+
+### 22.3 Network egress (cloud mode)
+
+For a single full jurisdiction run in cloud-only mode:
+
+- Cloud LLM tokens out: ≈ 800 k input + 80 k output tokens.
+- Cloud embedding tokens (OpenAI): ≈ 300 k tokens.
+- Cloud VLM image tokens: ≈ 50 page-images (scanned PDFs only).
+
+Operators behind air-gapped networks must run `local-only`. Operators on metered connections should set `cloud_budget.tokens_per_run` and `cloud_budget.usd_per_run`.
+
+---
+
+## 23. UN/UNESCAP Engagement & Open-Source Strategy
+
+### 23.1 Alignment with RDTII methodology
+
+ClauseChain's `configs/rdtii/pillar_6.yaml` and `pillar_7.yaml` are intended to be a faithful, machine-readable encoding of UNESCAP's RDTII v2.1 Guide. Indicator IDs in the prototype use placeholder values (e.g. `6.x`) where the final UNESCAP indicator catalog assignment is pending; these are clearly tagged with `schema_version: rdtii-2.1-hackathon-draft` so no consumer mistakes them for the canonical UNESCAP IDs. A versioned rubric upgrade path (`rdtii-2.1` → `rdtii-2.1-final`) is built into the loader.
+
+### 23.2 Validation against UNESCAP scoring
+
+For at least one jurisdiction (Singapore, where RDTII v2.1 scoring is most likely already complete), the prototype will compute ClauseChain's RDTII output and compare it indicator-by-indicator with UNESCAP's published scoring where available. Disagreements are reported with the underlying evidence, not hidden. This is the most honest demonstration that the system is real.
+
+### 23.3 Engagement plan
+
+- **Application stage (now):** publish PRD, prototype UI, and small benchmark. Open a GitHub Discussions thread inviting UNESCAP RDTII team feedback on the YAML rubric encoding.
+- **Round 1:** propose a 30-minute working session with UNESCAP to confirm indicator IDs, rubric edge cases, and any clarifications to the Guide that the rubric-as-code surfaces.
+- **Finals:** if accepted, deliver a contributor guide (`docs/adding_a_jurisdiction.md`, `docs/updating_the_rubric.md`) and a one-jurisdiction worked replication of UNESCAP's scoring methodology.
+
+### 23.4 Open-source posture
+
+- **License.** Apache 2.0 for code; `MODEL_LICENSES.md` for weights.
+- **Contributor model.** Each jurisdiction pack is a single PR (YAML + a small fixture set). The PR template requires authority hierarchy, citation patterns, and at least 10 labeled benchmark examples. Maintainers run the benchmark on PR.
+- **Governance.** Rubric files under `configs/rdtii/` are governed by a `MAINTAINERS.md` list; substantive RDTII semantics changes require sign-off from at least one maintainer with policy / legal background.
+- **Capacity building.** A `docs/jurisdiction_pack_quickstart.md` walks a new-country contributor from blank repo to working pipeline in under one day. Target audience: regulators and researchers in developing economies who want to score their own jurisdiction without waiting for a vendor.
+- **Public good.** The benchmark pack itself (positive / negative / OCR / amendment / repeal cases) is published under CC-BY-4.0 so it can be reused beyond ClauseChain — including by competing tools, which is fine and helps the field.
+
+---
+
 ## Appendix A - Application Form Crosswalk
 
 | Application field | PRD section |
 |---|---|
+| Executive snapshot (one-pager for fast scan) | Section 0 |
 | Project title | Section 3.1 |
 | Short proposal summary | Section 3.2 |
 | Problem understanding and objectives | Section 3.3 |
+| Competitive landscape | Section 3.4 |
 | Policy area | Section 4.1 |
+| Demo jurisdictions and anchor instruments | Section 4.3 |
 | Q1 linguistic conflict | Section 10.1 |
 | Q1 precedence and rationale | Section 10.2 |
 | Q1 programming the AI | Section 10.3 |
@@ -1346,6 +1643,13 @@ ClauseChain is Round-1-ready when:
 | Q4 evidence and citation | Section 12 |
 | Q5 authoritative source scenario | Sections 8.3, 8.9, and 12.2 |
 | Q6 anti-hallucination design | Section 11 |
+| Cloud LLM routing (OpenAI / Anthropic) | Section 6.4.1 |
+| Verification-gate thresholds | Section 8.9 |
+| OCR fuzzy-match citation example | Section 12.3 |
+| UI prototype reference | Section 14.2 |
+| Model licenses & provider matrix | Section 21 |
+| Hardware footprint & operating modes | Section 22 |
+| UN/UNESCAP engagement & open-source strategy | Section 23 |
 | Technical memo | Section 17 |
 
 ## Appendix B - Glossary

@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '../contexts/AuthContext'
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +22,8 @@ const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth()
   const { canAccessAdmin } = useAdminAccess()
   const router = useRouter()
+  const pathname = usePathname() ?? ''
+  const isHomepage = pathname === '/'
   const currentPlanSlug = (user?.current_plan?.slug || 'free').toLowerCase()
   const currentPlanTier = Number(user?.current_plan?.tier || 0)
   const isUpgraded =
@@ -44,92 +46,120 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center gap-3">
-            <BrandLogo compact />
+            {isHomepage ? (
+              <img
+                src="/branding/logo.svg"
+                alt="ClauseChain logo"
+                loading="eager"
+                decoding="async"
+                className="block h-[1.45rem] w-[7.8rem] shrink-0 object-contain sm:h-[1.6rem] sm:w-[8.6rem]"
+              />
+            ) : (
+              <BrandLogo compact />
+            )}
           </Link>
 
           <div className="hidden flex-1 lg:block" />
 
           <div className="flex items-center gap-3">
-            <div className="hidden md:block">
-              <Link href="/pricing">
-                <Button variant="ghost" className="rounded-full gap-2">
-                  {isUpgraded ? <Star className="h-4 w-4 text-[rgb(var(--theme-primary-rgb))]" /> : null}
-                  {isUpgraded ? 'Pro' : 'Upgrade'}
-                </Button>
-              </Link>
-            </div>
-            <div className="hidden md:block">
-              <ThemeStudioDialog />
-            </div>
-            {isAuthenticated ? (
+            {isHomepage ? (
               <>
-                <Link href="/dashboard">
-                  <Button variant="ghost" className="rounded-full">Dashboard</Button>
+                <Link href="/benchmark" className="hidden sm:block">
+                  <Button variant="ghost" className="rounded-full">Benchmark</Button>
                 </Link>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={resolveApiAssetUrl(user?.avatar)} alt={user?.full_name || user?.username} />
-                        <AvatarFallback className="bg-[rgb(var(--theme-secondary-soft-rgb))] text-[rgb(var(--theme-secondary-ink-rgb))]">
-                          {getUserInitials()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 rounded-2xl" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user?.username}</p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {user?.email}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push('/dashboard')}>
-                      <ClipboardList className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push('/dashboard')}>
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push('/profile')}>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push('/pricing')}>
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      <span>Upgrade</span>
-                    </DropdownMenuItem>
-                    {canAccessAdmin ? (
-                      <DropdownMenuItem onClick={() => router.push('/admin')}>
-                        <ShieldCheck className="mr-2 h-4 w-4" />
-                        <span>Admin Panel</span>
-                      </DropdownMenuItem>
-                    ) : null}
-                    <DropdownMenuItem>
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Link href="/source-status" className="hidden md:block">
+                  <Button variant="ghost" className="rounded-full">Source graph</Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button className="rounded-full bg-[var(--cc-ink-950)] hover:bg-[var(--cc-ink-800)]">
+                    Open demo
+                  </Button>
+                </Link>
               </>
             ) : (
               <>
-                <Link href="/login">
-                  <Button variant="ghost" className="rounded-full">Log in</Button>
-                </Link>
-                <Link href="/register">
-                  <Button className="rounded-full">Start free</Button>
-                </Link>
+                <div className="hidden md:block">
+                  <Link href="/pricing">
+                    <Button variant="ghost" className="rounded-full gap-2">
+                      {isUpgraded ? <Star className="h-4 w-4 text-[rgb(var(--theme-primary-rgb))]" /> : null}
+                      {isUpgraded ? 'Pro' : 'Upgrade'}
+                    </Button>
+                  </Link>
+                </div>
+                <div className="hidden md:block">
+                  <ThemeStudioDialog />
+                </div>
+                {isAuthenticated ? (
+                  <>
+                    <Link href="/dashboard">
+                      <Button variant="ghost" className="rounded-full">Dashboard</Button>
+                    </Link>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={resolveApiAssetUrl(user?.avatar)} alt={user?.full_name || user?.username} />
+                            <AvatarFallback className="bg-[rgb(var(--theme-secondary-soft-rgb))] text-[rgb(var(--theme-secondary-ink-rgb))]">
+                              {getUserInitials()}
+                            </AvatarFallback>
+                          </Avatar>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56 rounded-2xl" align="end" forceMount>
+                        <DropdownMenuLabel className="font-normal">
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium leading-none">{user?.username}</p>
+                            <p className="text-xs leading-none text-muted-foreground">
+                              {user?.email}
+                            </p>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => router.push('/dashboard')}>
+                          <ClipboardList className="mr-2 h-4 w-4" />
+                          <span>Dashboard</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push('/dashboard')}>
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          <span>Dashboard</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push('/profile')}>
+                          <User className="mr-2 h-4 w-4" />
+                          <span>Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push('/pricing')}>
+                          <CreditCard className="mr-2 h-4 w-4" />
+                          <span>Upgrade</span>
+                        </DropdownMenuItem>
+                        {canAccessAdmin ? (
+                          <DropdownMenuItem onClick={() => router.push('/admin')}>
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            <span>Admin Panel</span>
+                          </DropdownMenuItem>
+                        ) : null}
+                        <DropdownMenuItem>
+                          <Settings className="mr-2 h-4 w-4" />
+                          <span>Settings</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleLogout}>
+                          <LogOut className="mr-2 h-4 w-4" />
+                          <span>Log out</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login">
+                      <Button variant="ghost" className="rounded-full">Log in</Button>
+                    </Link>
+                    <Link href="/register">
+                      <Button className="rounded-full">Start free</Button>
+                    </Link>
+                  </>
+                )}
               </>
             )}
           </div>
