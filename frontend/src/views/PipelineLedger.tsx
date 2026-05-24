@@ -32,12 +32,12 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Pipeline & Ledger' }]}>
-      <div className="px-10 py-8 pb-20 max-w-[1440px]">
+      <div className="cc-page">
         {/* Header */}
-        <div className="flex items-end justify-between gap-6 mb-6">
+        <div className="cc-page-header">
           <div>
             <h1
-              className="font-semibold leading-[1.15] tracking-[-0.02em] text-cc-ink-950"
+              className="cc-page-title leading-[1.15] text-cc-ink-950"
               style={{ fontFamily: 'var(--cc-font-display)', fontSize: 32 }}
             >
               Pipeline & Provenance Ledger
@@ -46,7 +46,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
               Append-only, hash-chained audit trail. Every event recorded. Tamper-evident.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="cc-actions">
             <button className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] text-sm font-medium bg-white border border-cc-ink-300 text-cc-ink-900 hover:bg-cc-ink-50 transition-colors">
               <Filter size={14} /> Filter
             </button>
@@ -57,7 +57,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 border-b border-cc-ink-200 mb-6">
+        <div className="cc-tabs-scroll mb-6">
           {([['live', 'Live activity'], ['ledger', 'Provenance ledger'], ['graph', 'Evidence graph'], ['rejections', 'Verification catches']] as const).map(([k, label]) => (
             <button
               key={k}
@@ -75,7 +75,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
 
         {/* ─── Tab: Live activity ─── */}
         {tab === 'live' && (
-          <div className="grid gap-4" style={{ gridTemplateColumns: '1.5fr 1fr' }}>
+          <div className="cc-two-col-wide">
             {/* Activity stream */}
             <div className="bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
               <div className="flex items-center gap-3 px-5 py-3.5 border-b border-cc-ink-200">
@@ -156,7 +156,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
 
         {/* ─── Tab: Provenance ledger ─── */}
         {tab === 'ledger' && (
-          <div className="bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
+          <div className="cc-table-scroll bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
             {/* Table header */}
             <div className="cc-ledger-row border-b-2 border-cc-ink-200 bg-cc-ink-50">
               {['Entry #', 'Description', 'Own hash', 'Prev hash', 'Timestamp'].map((h) => (
@@ -184,9 +184,9 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
 
         {/* ─── Tab: Evidence graph ─── */}
         {tab === 'graph' && (
-          <div className="grid gap-6" style={{ gridTemplateColumns: '1fr 360px' }}>
-            <div className="bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
-              <div className="grid grid-cols-[1fr_150px_1fr_110px_120px] gap-3 border-b border-cc-ink-200 bg-cc-ink-50 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-cc-ink-500">
+          <div className="cc-two-col">
+            <div className="cc-table-scroll bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
+              <div className="cc-graph-edge-row grid grid-cols-[1fr_150px_1fr_110px_120px] gap-3 border-b border-cc-ink-200 bg-cc-ink-50 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-cc-ink-500">
                 <span>From</span>
                 <span>Relation</span>
                 <span>To</span>
@@ -194,7 +194,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
                 <span>Hash</span>
               </div>
               {SOURCE_STATUS_EDGES.map((edge) => (
-                <div key={edge.id} className="grid grid-cols-[1fr_150px_1fr_110px_120px] gap-3 border-b border-cc-ink-100 px-5 py-4 text-sm hover:bg-cc-ink-50">
+                <div key={edge.id} className="cc-graph-edge-row grid grid-cols-[1fr_150px_1fr_110px_120px] gap-3 border-b border-cc-ink-100 px-5 py-4 text-sm hover:bg-cc-ink-50">
                   <span className="font-mono text-xs font-semibold text-cc-ink-900">{edge.from}</span>
                   <span className="w-fit rounded bg-cc-teal-50 px-2 py-1 font-mono text-[10px] font-semibold text-cc-teal-600">{edge.relation}</span>
                   <span className="font-mono text-xs font-semibold text-cc-ink-900">{edge.to}</span>
@@ -233,7 +233,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
 
         {/* ─── Tab: CVR rejections ─── */}
         {tab === 'rejections' && (
-          <div className="grid gap-6" style={{ gridTemplateColumns: '1fr 1fr' }}>
+          <div className="cc-card-grid-2">
             {/* Summary card */}
             <div className="bg-white border border-cc-ink-200 rounded-2xl p-6">
               <h3 className="font-semibold text-[17px] text-cc-ink-950 mb-1">Gate distribution</h3>
@@ -291,10 +291,11 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
             </div>
 
             {/* Rejected items list */}
-            <div className="col-span-2 bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
+            <div className="bg-white border border-cc-ink-200 rounded-2xl overflow-hidden" style={{ gridColumn: '1 / -1' }}>
               <div className="px-5 py-4 border-b border-cc-ink-200">
                 <h3 className="font-semibold text-[17px] text-cc-ink-950">Recent rejections</h3>
               </div>
+              <div className="cc-table-scroll">
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-cc-ink-50 border-b border-cc-ink-200">
@@ -330,6 +331,7 @@ export default function PipelineLedger({ initialTab = 'live' }: { initialTab?: T
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         )}

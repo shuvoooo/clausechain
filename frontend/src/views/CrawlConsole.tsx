@@ -62,9 +62,9 @@ export default function CrawlConsole() {
     <WorkspaceShell breadcrumbs={[{ label: 'Pipeline' }, { label: 'Crawl Console' }]}>
       <PipelineStepper activeId="discover" />
 
-      <div style={{ padding: '24px 32px 80px', maxWidth: 1440 }}>
+      <div className="cc-page cc-pipeline-page">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 28 }}>
+        <div className="cc-page-header" style={{ marginBottom: 28 }}>
           <div>
             <h1 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 700, fontSize: 26, color: 'var(--cc-ink-950)', margin: 0 }}>
               Discovery &amp; Crawl Console
@@ -73,7 +73,7 @@ export default function CrawlConsole() {
               Singapore primary sources + Bangladesh/Thailand stress sources · run-SG-PDPA-001
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className="cc-actions">
             {!running || done ? (
               <button
                 onClick={start}
@@ -93,7 +93,7 @@ export default function CrawlConsole() {
         </div>
 
         {/* KPI strip */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 28 }}>
+        <div className="cc-kpi-grid-five" style={{ marginBottom: 28 }}>
           {[
             { label: 'Fetched', value: fetched, color: '#10B981' },
             { label: 'Official', value: official, color: '#047857' },
@@ -108,7 +108,7 @@ export default function CrawlConsole() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 20, alignItems: 'start' }}>
+        <div className="cc-crawl-layout">
           {/* Left: Seed URLs + Autonomy */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {/* Seed URLs */}
@@ -160,8 +160,9 @@ export default function CrawlConsole() {
               </span>
             </div>
 
+            <div className="cc-table-scroll">
             {/* Column headers */}
-            <div style={{ display: 'grid', gridTemplateColumns: '56px 1fr 90px 90px 90px 140px 80px', gap: 12, padding: '8px 16px', background: 'var(--cc-ink-50)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)', borderBottom: '1px solid var(--cc-ink-100)' }}>
+            <div className="cc-crawl-stream-header" style={{ padding: '8px 16px', background: 'var(--cc-ink-50)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)', borderBottom: '1px solid var(--cc-ink-100)' }}>
               <span>Time</span>
               <span>URL</span>
               <span>Type</span>
@@ -172,7 +173,7 @@ export default function CrawlConsole() {
             </div>
 
             {visible.map(item => (
-              <div key={item.id} className="crawl-stream-row" style={{ display: 'grid', gridTemplateColumns: '56px 1fr 90px 90px 90px 140px 80px', gap: 12, padding: '10px 16px', borderBottom: '1px solid var(--cc-ink-100)', alignItems: 'center', opacity: item.status === 'skipped' ? 0.55 : 1 }}>
+              <div key={item.id} className="cc-crawl-stream-row crawl-stream-row" style={{ padding: '10px 16px', borderBottom: '1px solid var(--cc-ink-100)', alignItems: 'center', opacity: item.status === 'skipped' ? 0.55 : 1 }}>
                 <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 11, color: 'var(--cc-ink-400)' }}>{item.ts}</span>
                 <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 12, color: 'var(--cc-ink-800)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={item.url}>
                   {item.url.replace('https://', '')}
@@ -200,6 +201,7 @@ export default function CrawlConsole() {
                 </span>
               </div>
             ))}
+            </div>
             {visible.length === 0 && (
               <div style={{ padding: '56px 0', textAlign: 'center', color: 'var(--cc-ink-400)', fontSize: 13 }}>
                 Press <strong style={{ color: 'var(--cc-ink-600)' }}>Start crawl</strong> to stream source discovery.

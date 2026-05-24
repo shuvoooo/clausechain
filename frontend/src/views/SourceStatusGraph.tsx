@@ -69,17 +69,17 @@ export default function SourceStatusGraph() {
     <WorkspaceShell breadcrumbs={[{ label: 'Source Status' }]}>
       <PipelineStepper activeId="authority" />
 
-      <div className="px-10 py-8 pb-20" style={{ maxWidth: 1440 }}>
-        <div className="mb-6 flex items-end justify-between gap-6">
+      <div className="cc-page">
+        <div className="cc-page-header">
           <div>
-            <h1 className="text-[32px] font-semibold tracking-[-0.02em] text-cc-ink-950" style={{ fontFamily: 'var(--cc-font-display)' }}>
+            <h1 className="cc-page-title text-[32px]">
               Source Status Graph
             </h1>
             <p className="mt-1.5 text-cc-ink-500">
               Authority resolver selects current binding law, keeps guidance as context, and blocks drafts from controlling outputs.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="cc-actions">
             {!running || step >= maxStep ? (
               <button
                 onClick={start}
@@ -98,7 +98,7 @@ export default function SourceStatusGraph() {
           </div>
         </div>
 
-        <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className="cc-kpi-grid mb-6">
           {[
             { label: 'Binding sources', value: statusCounts.binding, color: '#047857' },
             { label: 'Current sources', value: statusCounts.current, color: '#0F766E' },
@@ -114,7 +114,7 @@ export default function SourceStatusGraph() {
           ))}
         </div>
 
-        <div className="grid gap-5" style={{ gridTemplateColumns: '1fr 380px' }}>
+        <div className="cc-two-col">
           <section className="rounded-2xl border border-cc-ink-200 bg-white p-5">
             <div className="mb-4 flex items-center justify-between">
               <div>
@@ -124,7 +124,7 @@ export default function SourceStatusGraph() {
               <span className="font-mono text-xs text-cc-ink-500">{step} / {maxStep}</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="cc-source-node-grid">
               {visibleNodes.map((node) => (
                 <div
                   key={node.id}
@@ -148,7 +148,7 @@ export default function SourceStatusGraph() {
               ))}
 
               {visibleNodes.length === 0 && (
-                <div className="col-span-3 py-20 text-center text-sm text-cc-ink-400">
+                  <div className="py-20 text-center text-sm text-cc-ink-400" style={{ gridColumn: '1 / -1' }}>
                   Press <strong className="text-cc-ink-600">Run resolver</strong> to simulate source authority detection.
                 </div>
               )}
@@ -157,15 +157,17 @@ export default function SourceStatusGraph() {
             {visibleEdges.length > 0 && (
               <div className="mt-5 rounded-2xl border border-cc-ink-200 bg-cc-ink-50 p-4">
                 <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.06em] text-cc-ink-500">Relationship edges</p>
+                <div className="cc-table-scroll">
                 <div className="grid gap-2">
                   {visibleEdges.map((edge) => (
-                    <div key={edge.id} className="evidence-graph-edge grid grid-cols-[1fr_150px_1fr_88px] items-center gap-3 rounded-xl border border-cc-ink-200 bg-white px-3 py-2 text-xs">
+                    <div key={edge.id} className="cc-status-edge-row evidence-graph-edge grid grid-cols-[1fr_150px_1fr_88px] items-center gap-3 rounded-xl border border-cc-ink-200 bg-white px-3 py-2 text-xs">
                       <span className="truncate font-mono text-cc-ink-800">{edge.from}</span>
                       <span className="rounded bg-cc-teal-50 px-2 py-1 text-center font-mono text-[10px] font-semibold text-cc-teal-600">{edge.relation}</span>
                       <span className="truncate font-mono text-cc-ink-800">{edge.to}</span>
                       <HashBadge hash={edge.hash} />
                     </div>
                   ))}
+                </div>
                 </div>
               </div>
             )}

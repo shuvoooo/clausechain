@@ -34,15 +34,15 @@ export default function WorkspaceDashboard() {
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Dashboard' }]}>
-      <div className="px-10 py-8 pb-20 max-w-[1440px]">
+      <div className="cc-page">
         {/* Hero header */}
-        <div className="flex items-end justify-between gap-6 mb-8">
+        <div className="cc-page-header mb-8">
           <div>
             <p className="text-[11px] font-medium tracking-[0.06em] uppercase text-cc-ink-500 mb-1.5">
               Sunday · 24 May 2026 · UTC+06
             </p>
             <h1
-              className="font-semibold leading-[1.1] tracking-[-0.02em] text-cc-ink-950"
+              className="cc-page-title leading-[1.1] text-cc-ink-950"
               style={{ fontFamily: 'var(--cc-font-display)', fontSize: 40 }}
             >
               Measured legal evidence compiler
@@ -51,7 +51,7 @@ export default function WorkspaceDashboard() {
               P6/P7 demo workspace with benchmarked discovery, authority resolution, predicate mapping, and verified citations.
             </p>
           </div>
-          <div className="flex gap-2 shrink-0">
+          <div className="cc-actions">
             <button
               onClick={() => setExportOpen(true)}
               className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] text-sm font-medium bg-white border border-cc-ink-300 text-cc-ink-900 hover:bg-cc-ink-50 hover:border-cc-ink-400 transition-colors"
@@ -68,7 +68,7 @@ export default function WorkspaceDashboard() {
         </div>
 
         {/* KPI strip */}
-        <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: '1.4fr 1fr 1fr 1fr' }}>
+        <div className="cc-dashboard-kpi mb-8">
           <div
             className="flex flex-col gap-2 p-6 border rounded-2xl"
             style={{ background: 'linear-gradient(140deg, #FFFFFF 0%, #F0FDFA 100%)', borderColor: 'var(--cc-teal-100)' }}
@@ -91,7 +91,7 @@ export default function WorkspaceDashboard() {
         </div>
 
         {/* Two-column body */}
-        <div className="grid gap-6" style={{ gridTemplateColumns: '1.6fr 1fr' }}>
+        <div className="cc-dashboard-body">
           {/* Left */}
           <div className="flex flex-col gap-4">
             {/* Jurisdiction heading */}
@@ -106,7 +106,7 @@ export default function WorkspaceDashboard() {
             </div>
 
             {/* Jurisdiction cards grid */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="cc-card-grid-2">
               {JURISDICTIONS.map((j) => (
                 <Link
                   key={j.code}
@@ -128,7 +128,7 @@ export default function WorkspaceDashboard() {
                   </div>
 
                   {/* Stats row */}
-                  <div className="grid grid-cols-4 gap-1 mb-4">
+                  <div className="cc-mini-stat-grid mb-4">
                     {[
                       { val: j.instruments, label: 'Instruments' },
                       { val: j.clauses, label: 'Clauses' },

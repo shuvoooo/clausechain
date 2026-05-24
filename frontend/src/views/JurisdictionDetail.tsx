@@ -51,16 +51,16 @@ export default function JurisdictionDetail({ country }: Props) {
         { label: j.name },
       ]}
     >
-      <div className="px-10 py-8 pb-20 max-w-[1440px]">
+      <div className="cc-page">
         {/* Header */}
-        <div className="flex items-start justify-between gap-6 mb-8">
+        <div className="cc-page-header mb-8">
           <div className="flex items-center gap-4">
             <span className="text-[44px] leading-none">{j.flag}</span>
             <div>
               <h1
-                className="font-semibold leading-[1.1] tracking-[-0.02em] text-cc-ink-950"
-                style={{ fontFamily: 'var(--cc-font-display)', fontSize: 36 }}
-              >
+              className="cc-page-title leading-[1.1] text-cc-ink-950"
+              style={{ fontFamily: 'var(--cc-font-display)', fontSize: 36 }}
+            >
                 {j.name}
               </h1>
               <p className="text-cc-ink-500 mt-1">
@@ -68,7 +68,7 @@ export default function JurisdictionDetail({ country }: Props) {
               </p>
             </div>
           </div>
-          <div className="flex gap-2 shrink-0 mt-1">
+          <div className="cc-actions mt-1">
             <button className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] text-sm font-medium bg-white border border-cc-ink-300 text-cc-ink-900 hover:bg-cc-ink-50 transition-colors">
               <RefreshCw size={14} /> Re-crawl seeds
             </button>
@@ -82,7 +82,7 @@ export default function JurisdictionDetail({ country }: Props) {
         </div>
 
         {/* Top stats row */}
-        <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: '1.4fr 1fr 1fr' }}>
+        <div className="cc-three-col mb-8">
           {/* RDTII Coverage */}
           <div className="bg-white border border-cc-ink-200 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-4">
@@ -150,7 +150,7 @@ export default function JurisdictionDetail({ country }: Props) {
         </div>
 
         {/* Documents table */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="cc-doc-controls">
           <h2
             className="font-semibold text-[22px] leading-snug tracking-[-0.01em] text-cc-ink-950"
             style={{ fontFamily: 'var(--cc-font-display)' }}
@@ -185,7 +185,7 @@ export default function JurisdictionDetail({ country }: Props) {
           </select>
         </div>
 
-        <div className="bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
+        <div className="cc-table-scroll bg-white border border-cc-ink-200 rounded-2xl overflow-hidden">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-cc-ink-50 border-b border-cc-ink-200">

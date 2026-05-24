@@ -22,6 +22,8 @@ import {
   XCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import ArchitectureDiagram from '@/components/clausechain/ArchitectureDiagram'
+import CVRLoopDiagram from '@/components/clausechain/CVRLoopDiagram'
 
 type MotionStyle = CSSProperties & { [key: `--${string}`]: string | number }
 
@@ -257,6 +259,8 @@ export default function Home() {
         </div>
       </section>
 
+      <ArchitectureDiagram />
+
       <section className="bg-[var(--cc-ink-950)] text-white">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
           <div>
@@ -332,6 +336,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <CVRLoopDiagram />
 
       <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">

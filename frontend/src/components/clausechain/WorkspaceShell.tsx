@@ -44,31 +44,26 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
   const initials = user?.email?.slice(0, 2).toUpperCase() ?? 'CC'
 
   return (
-    <div className="flex h-screen overflow-hidden bg-cc-ink-50" style={{ fontFamily: 'var(--cc-font-display)' }}>
+    <div className="cc-workspace-shell flex h-screen overflow-hidden bg-cc-ink-50" style={{ fontFamily: 'var(--cc-font-display)' }}>
       {/* Sidebar */}
       <aside
-        className="flex flex-col shrink-0 w-60 border-r border-cc-ink-200 bg-white overflow-y-auto"
+        className="cc-sidebar flex flex-col shrink-0 border-r border-cc-ink-200 bg-white overflow-y-auto"
         style={{ height: '100vh', position: 'sticky', top: 0 }}
       >
         {/* Brand */}
-        <div className="flex items-center gap-2.5 px-4 pt-6 pb-6">
-          <div
-            className="w-7 h-7 rounded-lg grid place-items-center text-white text-xs font-bold"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)' }}
-          >
-            CC
-          </div>
-          <span
-            className="font-bold text-[17px] tracking-tight"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}
-          >
-            ClauseChain
-          </span>
+        <div className="cc-sidebar-brand flex items-center px-4 pt-6 pb-6">
+          <img
+            src="/branding/logo.svg"
+            alt="ClauseChain"
+            loading="eager"
+            decoding="async"
+            className="h-8 w-auto object-contain"
+          />
         </div>
 
         {/* Nav */}
         <nav className="flex flex-col gap-1 px-3">
-          <span className="px-2.5 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">
+          <span className="cc-sidebar-section-label px-2.5 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">
             Workspace
           </span>
           {NAV_ITEMS.map(({ href, icon: Icon, label, count }) => {
@@ -80,16 +75,17 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] text-sm font-medium transition-colors ${
+                title={label}
+                className={`cc-nav-link flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] text-sm font-medium transition-colors ${
                   active
                     ? 'bg-cc-teal-50 text-cc-teal-600'
                     : 'text-cc-ink-700 hover:bg-cc-ink-100 hover:text-cc-ink-900'
                 }`}
               >
                 <Icon size={16} />
-                <span className="flex-1">{label}</span>
+                <span className="cc-nav-text flex-1">{label}</span>
                 {count != null && (
-                  <span className={`text-xs tabular-nums ${active ? 'text-cc-teal-600' : 'text-cc-ink-500'}`}>
+                  <span className={`cc-nav-count text-xs tabular-nums ${active ? 'text-cc-teal-600' : 'text-cc-ink-500'}`}>
                     {count}
                   </span>
                 )}
@@ -100,7 +96,7 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
 
         {/* Pipeline section */}
         <nav className="flex flex-col gap-1 px-3 mt-2">
-          <span className="px-2.5 pt-3 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">
+          <span className="cc-sidebar-section-label px-2.5 pt-3 pb-1.5 text-[11px] font-medium tracking-widest uppercase text-cc-ink-500">
             Pipeline
           </span>
           {PIPELINE_ITEMS.map(({ href, icon: Icon, label }) => {
@@ -109,21 +105,22 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] text-sm font-medium transition-colors ${
+                title={label}
+                className={`cc-nav-link flex items-center gap-2.5 px-2.5 py-2 rounded-[10px] text-sm font-medium transition-colors ${
                   active
                     ? 'bg-cc-teal-50 text-cc-teal-600'
                     : 'text-cc-ink-700 hover:bg-cc-ink-100 hover:text-cc-ink-900'
                 }`}
               >
                 <Icon size={16} />
-                <span>{label}</span>
+                <span className="cc-nav-text">{label}</span>
               </Link>
             )
           })}
         </nav>
 
         {/* Footer */}
-        <div className="mt-auto px-3 py-4 border-t border-cc-ink-200">
+        <div className="cc-sidebar-footer mt-auto px-3 py-4 border-t border-cc-ink-200">
           <div className="flex items-center gap-2.5 px-2.5 py-2">
             <div
               className="w-7 h-7 rounded-full grid place-items-center text-white text-xs font-semibold shrink-0"
@@ -131,7 +128,7 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
             >
               {initials}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="cc-sidebar-user-copy flex-1 min-w-0">
               <p className="text-sm font-medium text-cc-ink-900 truncate">{user?.email ?? 'analyst'}</p>
               <p className="text-xs text-cc-ink-500 font-mono">UN Hackathon 2026</p>
             </div>
@@ -150,19 +147,25 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         {/* Topbar */}
         <header
-          className="flex items-center gap-4 px-8 h-14 border-b border-cc-ink-200 shrink-0 sticky top-0 z-10"
+          className="cc-topbar flex items-center gap-4 h-14 border-b border-cc-ink-200 shrink-0 sticky top-0 z-10"
           style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'saturate(180%) blur(12px)' }}
         >
           {/* Breadcrumbs */}
-          <nav className="flex items-center gap-1.5 text-[13px] text-cc-ink-500 min-w-0 flex-1">
-            <Link href="/dashboard" className="hover:text-cc-ink-900 transition-colors whitespace-nowrap">
-              ClauseChain
+          <nav className="cc-breadcrumbs flex items-center gap-1.5 text-[13px] text-cc-ink-500 min-w-0 flex-1">
+            <Link href="/dashboard" className="flex items-center shrink-0 opacity-80 hover:opacity-100 transition-opacity">
+              <img
+                src="/branding/logo.svg"
+                alt="ClauseChain"
+                loading="eager"
+                decoding="async"
+                className="h-[1.35rem] w-auto object-contain"
+              />
             </Link>
             {breadcrumbs.map((crumb, i) => (
-              <span key={i} className="flex items-center gap-1.5">
+              <span key={i} className="flex items-center gap-1.5 min-w-0">
                 <ChevronRight size={12} className="text-cc-ink-300 shrink-0" />
                 {crumb.href ? (
-                  <Link href={crumb.href} className="hover:text-cc-ink-900 transition-colors whitespace-nowrap">
+                  <Link href={crumb.href} className="hover:text-cc-ink-900 transition-colors truncate">
                     {crumb.label}
                   </Link>
                 ) : (
@@ -175,11 +178,11 @@ export default function WorkspaceShell({ children, breadcrumbs = [] }: Workspace
           {/* Search trigger */}
           <button
             onClick={() => setCmdOpen(true)}
-            className="flex items-center gap-2.5 px-3 py-1.5 rounded-[10px] bg-cc-ink-100 text-cc-ink-500 text-[13px] border border-transparent hover:bg-cc-ink-50 hover:border-cc-ink-200 transition-colors min-w-[200px]"
+            className="cc-search-trigger flex items-center gap-2.5 px-3 py-1.5 rounded-[10px] bg-cc-ink-100 text-cc-ink-500 text-[13px] border border-transparent hover:bg-cc-ink-50 hover:border-cc-ink-200 transition-colors"
           >
             <Search size={13} />
-            <span className="flex-1 text-left">Search clauses, docs…</span>
-            <span className="flex items-center gap-0.5 text-[11px] font-mono text-cc-ink-600 bg-white border border-cc-ink-200 px-1.5 py-0.5 rounded">
+            <span className="cc-search-label flex-1 text-left">Search clauses, docs…</span>
+            <span className="cc-search-kbd flex items-center gap-0.5 text-[11px] font-mono text-cc-ink-600 bg-white border border-cc-ink-200 px-1.5 py-0.5 rounded">
               <Command size={10} />K
             </span>
           </button>

@@ -371,6 +371,259 @@
    ClauseChain Utility Classes
    ============================================================ */
 
+.cc-workspace-shell {
+  min-width: 0;
+}
+
+.cc-sidebar {
+  width: 240px;
+}
+
+.cc-topbar {
+  padding-inline: 32px;
+}
+
+.cc-search-trigger {
+  min-width: 200px;
+}
+
+.cc-page {
+  width: 100%;
+  max-width: none;
+  padding: 32px 40px 80px;
+}
+
+.cc-pipeline-page {
+  padding-top: 24px;
+}
+
+.cc-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.cc-page-title {
+  font-family: var(--cc-font-display);
+  font-weight: 700;
+  color: var(--cc-ink-950);
+  letter-spacing: -0.02em;
+}
+
+.cc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.cc-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cc-kpi-grid-five {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cc-two-col,
+.cc-two-col-wide,
+.cc-three-col {
+  display: grid;
+  gap: 20px;
+  align-items: start;
+}
+
+.cc-two-col { grid-template-columns: minmax(0, 1fr) 380px; }
+.cc-two-col-wide { grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr); }
+.cc-three-col { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); }
+
+.cc-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.cc-table-scroll > table {
+  min-width: 860px;
+}
+
+.cc-dense-row {
+  min-width: 760px;
+}
+
+.cc-stack-tablet {
+  min-width: 0;
+}
+
+.cc-dashboard-kpi {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cc-dashboard-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
+  gap: 24px;
+}
+
+.cc-card-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cc-mini-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.cc-filter-strip {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cc-tabs-scroll {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--cc-ink-200);
+}
+
+.cc-tabs-scroll > button {
+  flex-shrink: 0;
+}
+
+.cc-source-node-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cc-status-edge-row {
+  min-width: 620px;
+}
+
+.benchmark-metric-row {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 92px;
+  gap: 20px;
+}
+
+.cc-graph-edge-row {
+  min-width: 760px;
+}
+
+.cc-doc-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cc-source-health-row {
+  min-width: 0;
+}
+
+.cc-crawl-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.cc-crawl-stream-header,
+.cc-crawl-stream-row {
+  display: grid;
+  grid-template-columns: 56px minmax(220px, 1fr) 90px 90px 90px 140px 80px;
+  gap: 12px;
+  min-width: 760px;
+}
+
+.cc-harvest-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+.cc-harvest-sidebar {
+  background: white;
+  border-right: 1px solid var(--cc-ink-200);
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cc-harvest-content {
+  padding: 20px 28px 100px;
+  overflow-y: auto;
+}
+
+.cc-extraction-risk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.cc-risk-row,
+.cc-risk-header {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) 82px 78px;
+  gap: 12px;
+  min-width: 520px;
+}
+
+.cc-ocr-header,
+.ocr-row {
+  min-width: 760px;
+}
+
+.cc-mapping-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 20px;
+  align-items: start;
+}
+
+.cc-mapping-stream-header,
+.mapping-row {
+  grid-template-columns: 96px minmax(220px, 1fr) 96px 142px 90px;
+  min-width: 680px;
+}
+
+.cc-export-record-row {
+  display: grid;
+  grid-template-columns: 160px 120px minmax(240px, 1fr) 120px 110px 110px;
+  gap: 12px;
+  min-width: 820px;
+}
+
+.cc-export-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 0 20px 16px 300px;
+}
+
+.cc-export-tabs {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--cc-ink-200);
+}
+
 /* Gradient text — hero titles only */
 .cc-gradient-text {
   background: linear-gradient(135deg, #0FB5A7 0%, #14B8A6 35%, #06B6D4 70%, #2563EB 100%);
@@ -478,6 +731,7 @@
   gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--cc-ink-100);
   cursor: pointer; align-items: center; font-size: 13px;
   transition: background 150ms;
+  min-width: 760px;
 }
 .cc-ledger-row:hover { background: var(--cc-ink-50); }
 
@@ -498,6 +752,296 @@
 }
 .cc-chain-bullet.pass { background: var(--cc-success-bg); color: var(--cc-success); }
 .cc-chain-bullet.fail { background: var(--cc-danger-bg); color: var(--cc-danger); }
+
+@media (max-width: 1179px) {
+  .cc-sidebar {
+    width: 72px;
+  }
+
+  .cc-sidebar-brand {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .cc-sidebar-label,
+  .cc-sidebar-section-label,
+  .cc-nav-text,
+  .cc-nav-count,
+  .cc-sidebar-user-copy {
+    display: none;
+  }
+
+  .cc-nav-link {
+    justify-content: center;
+    padding-inline: 0;
+    min-height: 38px;
+  }
+
+  .cc-sidebar-footer {
+    padding-inline: 8px;
+  }
+
+  .cc-sidebar-footer > div {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .cc-topbar {
+    padding-inline: 24px;
+  }
+
+  .cc-page {
+    padding-inline: 32px;
+  }
+
+  .pipeline-stepper {
+    padding-inline: 24px;
+  }
+
+  .stepper-run-badge {
+    display: none;
+  }
+
+  .cc-source-node-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1023px) {
+  .cc-topbar {
+    padding-inline: 18px;
+    gap: 10px;
+  }
+
+  .cc-search-trigger {
+    min-width: 36px;
+    width: 36px;
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .cc-search-label,
+  .cc-search-kbd {
+    display: none;
+  }
+
+  .cc-page {
+    padding: 28px 24px 72px;
+  }
+
+  .cc-pipeline-page {
+    padding-top: 20px;
+  }
+
+  .cc-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cc-actions {
+    width: 100%;
+  }
+
+  .cc-kpi-grid,
+  .cc-dashboard-kpi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cc-kpi-grid-five {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cc-two-col,
+  .cc-two-col-wide,
+  .cc-three-col,
+  .cc-dashboard-body,
+  .cc-crawl-layout,
+  .cc-harvest-layout,
+  .cc-extraction-risk-grid,
+  .cc-mapping-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .cc-card-grid-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cc-doc-controls {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .cc-doc-controls input {
+    width: min(100%, 280px);
+  }
+
+  .cc-harvest-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--cc-ink-200);
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    padding: 12px;
+  }
+
+  .cc-harvest-sidebar .type-bucket-btn {
+    width: auto;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .cc-harvest-sidebar > div {
+    flex-shrink: 0;
+  }
+
+  .cc-harvest-content {
+    padding: 20px 24px 120px;
+  }
+
+  .harvest-actions-bar {
+    padding-inline: 24px;
+    flex-wrap: wrap;
+  }
+
+  .harvest-actions-bar > div:nth-child(2) {
+    min-width: 220px;
+  }
+
+  .extract-panes {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .markdown-out {
+    height: auto;
+    max-height: 460px;
+  }
+
+  .trace-layout {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .trace-panel-divider {
+    display: none;
+  }
+
+  .trace-panel {
+    max-height: 520px;
+    border-bottom: 1px solid var(--cc-ink-200);
+  }
+
+  .trace-panel:last-child {
+    border-bottom: 0;
+  }
+
+  .span-popover {
+    width: min(320px, calc(100vw - 128px));
+  }
+
+  .cc-export-details {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 20px;
+  }
+}
+
+@media (max-width: 859px) {
+  .cc-page {
+    padding: 24px 16px 64px;
+  }
+
+  .pipeline-stepper {
+    padding: 8px 16px;
+  }
+
+  .ss-label {
+    font-size: 11px;
+  }
+
+  .cc-page-title {
+    font-size: 28px !important;
+  }
+
+  .cc-dashboard-kpi,
+  .cc-kpi-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cc-kpi-grid-five {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cc-source-node-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .benchmark-metric-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .benchmark-metric-row > div:last-child {
+    text-align: left !important;
+  }
+
+  .cc-mini-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cc-filter-strip {
+    align-items: flex-start;
+  }
+
+  .cc-filter-strip > div {
+    flex-wrap: wrap;
+  }
+
+  .cc-matrix-cell {
+    width: 72px;
+  }
+
+  .cc-matrix th:first-child,
+  .cc-matrix tbody th {
+    min-width: 156px !important;
+  }
+
+  .harvest-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .harvest-actions-bar {
+    padding-inline: 16px;
+  }
+
+  .harvest-actions-bar a,
+  .harvest-actions-bar button {
+    flex: 1 1 180px;
+    justify-content: center;
+  }
+
+  .cc-vchain,
+  .cc-vchain-v2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cc-mapping-stream-header,
+  .mapping-row {
+    grid-template-columns: 78px minmax(160px, 1fr) 68px 112px 76px;
+    min-width: 620px;
+    gap: 8px;
+  }
+
+  .trace-text-body,
+  .trace-source-body {
+    padding: 18px;
+  }
+
+  .legend-bar,
+  .cc-actions {
+    gap: 8px;
+  }
+}
 
 /* ============================================================
    ClauseChain Public Homepage
@@ -988,6 +1532,12 @@
 @keyframes cc-home-gate {
   0%, 100% { filter: saturate(0.95); }
   50% { filter: saturate(1.22); }
+}
+
+/* CVR Loop diagram — pop-in for review/reject lane indicators */
+@keyframes cc-cvr-pop {
+  from { opacity: 0; transform: scale(0.7) translateY(4px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
 }
 
 @media (max-width: 1100px) {

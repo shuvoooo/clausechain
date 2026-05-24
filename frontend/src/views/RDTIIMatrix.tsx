@@ -105,19 +105,19 @@ export default function RDTIIMatrix() {
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'RDTII Matrix' }]}>
-      <div className="px-10 py-8 pb-20 max-w-[1440px]">
+      <div className="cc-page">
         {/* Header */}
-        <div className="flex items-end justify-between gap-6 mb-6">
+        <div className="cc-page-header">
           <div>
             <h1
-              className="font-semibold leading-[1.15] tracking-[-0.02em] text-cc-ink-950"
+              className="cc-page-title leading-[1.15] text-cc-ink-950"
               style={{ fontFamily: 'var(--cc-font-display)', fontSize: 32 }}
             >
               <span className="cc-gradient-text">RDTII Matrix</span>
             </h1>
             <p className="text-cc-ink-500 mt-1.5">Jurisdictions × sub-criteria · evidence-graded · audit-ready · hash-anchored</p>
           </div>
-          <div className="flex gap-2">
+          <div className="cc-actions">
             <button className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] text-sm font-medium bg-white border border-cc-ink-300 text-cc-ink-900 hover:bg-cc-ink-50 transition-colors">
               <Filter size={14} /> View
             </button>
@@ -131,7 +131,7 @@ export default function RDTIIMatrix() {
         </div>
 
         {/* Filter strip */}
-        <div className="bg-white border border-cc-ink-200 rounded-2xl px-4 py-3 mb-4 flex flex-wrap items-center gap-4">
+        <div className="cc-filter-strip bg-white border border-cc-ink-200 rounded-2xl px-4 py-3 mb-4">
           {/* Jurisdiction chips */}
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-medium tracking-[0.06em] uppercase text-cc-ink-500">Jurisdictions</span>
@@ -171,7 +171,7 @@ export default function RDTIIMatrix() {
         </div>
 
         {/* Summary stats */}
-        <div className="grid grid-cols-4 gap-4 mb-4">
+        <div className="cc-kpi-grid mb-4">
           {[
             { label: 'Verified', value: `${Math.round((tally.v / Math.max(tally.total, 1)) * 100)}%`, sub: `${tally.v} of ${tally.total} sub-criteria`, color: 'var(--cc-success)' },
             { label: 'Pending review', value: String(tally.p), sub: 'awaiting analyst', color: 'var(--cc-warning)' },

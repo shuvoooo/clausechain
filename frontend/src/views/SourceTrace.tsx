@@ -166,11 +166,11 @@ export default function SourceTrace() {
       <PipelineStepper activeId="verify" />
 
       <div
-        style={{ padding: '20px 32px 60px' }}
+        className="cc-page cc-pipeline-page"
         onClick={() => { setShowPopover(null); setActiveSpan(null) }}
       >
         {/* ── Page header ── */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24, marginBottom: 16 }}>
+        <div className="cc-page-header" style={{ alignItems: 'flex-start', marginBottom: 16 }}>
           <div>
             <h1 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 700, fontSize: 22, color: 'var(--cc-ink-950)', margin: 0 }}>
               Source Trace
@@ -181,7 +181,7 @@ export default function SourceTrace() {
               {' '}· {coverage.verified} verified · {coverage.pending} pending · {coverage.fuzzy} fuzzy-matched
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className="cc-actions">
             <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 14px', height: 36, borderRadius: 10, fontSize: 13, fontWeight: 500, border: '1px solid var(--cc-ink-300)', background: 'white', color: 'var(--cc-ink-800)', cursor: 'pointer' }}>
               Export trace
             </button>
@@ -192,17 +192,17 @@ export default function SourceTrace() {
         </div>
 
         {/* ── Coverage summary bar ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 10, marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 10, marginBottom: 14, flexWrap: 'wrap' }}>
           <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--cc-ink-700)' }}>
             {coverage.total} clauses mapped across {pillars.length} indicators
           </div>
-          <div style={{ flex: 1, height: 6, background: 'var(--cc-ink-200)', borderRadius: 999, overflow: 'hidden', margin: '0 8px' }}>
+          <div style={{ flex: '1 1 180px', height: 6, background: 'var(--cc-ink-200)', borderRadius: 999, overflow: 'hidden', margin: '0 8px' }}>
             <div style={{ display: 'flex', height: '100%' }}>
               <div style={{ width: `${(coverage.verified / coverage.total) * 100}%`, background: '#10B981', transition: 'width 400ms ease' }} />
               <div style={{ width: `${(coverage.pending  / coverage.total) * 100}%`, background: '#F59E0B', transition: 'width 400ms ease' }} />
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 12, fontSize: 12 }}>
+          <div style={{ display: 'flex', gap: 12, fontSize: 12, flexWrap: 'wrap' }}>
             {[{ c: '#10B981', l: 'Verified' }, { c: '#F59E0B', l: 'Pending' }, { c: 'var(--cc-ink-400)', l: 'Fuzzy' }].map(x => (
               <span key={x.l} style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--cc-ink-600)' }}>
                 <span style={{ width: 8, height: 8, borderRadius: 2, background: x.c }} />
@@ -236,7 +236,7 @@ export default function SourceTrace() {
         </div>
 
         {/* ── Status pattern legend ── */}
-        <div style={{ display: 'flex', gap: 16, fontSize: 11, color: 'var(--cc-ink-500)', marginBottom: 14 }}>
+        <div style={{ display: 'flex', gap: 16, fontSize: 11, color: 'var(--cc-ink-500)', marginBottom: 14, flexWrap: 'wrap' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
             <span style={{ width: 20, height: 10, background: 'rgba(15,181,167,0.25)', border: '1.5px solid #0FB5A7', borderRadius: 2, display: 'inline-block' }} />
             Solid fill = verified

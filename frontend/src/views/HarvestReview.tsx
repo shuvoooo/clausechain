@@ -107,10 +107,10 @@ export default function HarvestReview() {
       <PipelineStepper activeId="harvest" />
 
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 112px)' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', flex: 1, minHeight: 0 }}>
+        <div className="cc-harvest-layout">
 
           {/* Type sidebar */}
-          <div style={{ background: 'white', borderRight: '1px solid var(--cc-ink-200)', padding: '20px 12px', display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div className="cc-harvest-sidebar">
             <div style={{ padding: '0 10px 8px', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>Document types</div>
             {DOC_TYPES.map(t => (
               <button key={t.id} className={`type-bucket-btn ${activeType === t.id ? 'active' : ''}`} onClick={() => setActiveType(t.id)}>
@@ -134,8 +134,8 @@ export default function HarvestReview() {
           </div>
 
           {/* Document cards */}
-          <div style={{ padding: '20px 28px 100px', overflowY: 'auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+          <div className="cc-harvest-content">
+            <div className="cc-page-header" style={{ marginBottom: 20 }}>
               <div>
                 <h2 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 600, fontSize: 22, color: 'var(--cc-ink-950)', margin: 0 }}>
                   {activeType === 'all' ? 'All documents' : TYPE_LABELS[activeType]?.label ?? activeType}
@@ -144,8 +144,7 @@ export default function HarvestReview() {
                   {filtered.filter(d => d.keep).length} kept · {filtered.filter(d => !d.keep).length} discarded
                 </div>
               </div>
-              <div style={{ flex: 1 }} />
-              <div style={{ display: 'flex', gap: 6 }}>
+              <div className="cc-actions">
                 <input
                   className="border border-cc-ink-300 rounded-[10px] px-3 text-[13px] h-9 outline-none focus:border-cc-teal-500"
                   style={{ width: 200 }}

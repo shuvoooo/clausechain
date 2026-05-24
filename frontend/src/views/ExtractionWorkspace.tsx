@@ -108,9 +108,9 @@ export default function ExtractionWorkspace() {
     <WorkspaceShell breadcrumbs={[{ label: 'Pipeline' }, { label: 'Extraction' }]}>
       <PipelineStepper activeId="ocr" />
 
-      <div style={{ padding: '20px 32px 80px' }}>
+      <div className="cc-page cc-pipeline-page">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+        <div className="cc-page-header" style={{ marginBottom: 20 }}>
           <div>
             <h1 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 700, fontSize: 22, color: 'var(--cc-ink-950)', margin: 0 }}>
               Extraction Workspace
@@ -136,20 +136,20 @@ export default function ExtractionWorkspace() {
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 14, marginBottom: 20 }}>
+        <div className="cc-extraction-risk-grid">
           <div style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, overflow: 'hidden' }}>
             <div style={{ padding: '11px 16px', borderBottom: '1px solid var(--cc-ink-200)', display: 'flex', alignItems: 'center', gap: 10 }}>
               <h2 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 600, fontSize: 15, margin: 0 }}>Legal-term risk stream</h2>
               <span style={{ marginLeft: 'auto', fontFamily: 'var(--cc-font-mono)', fontSize: 11, color: 'var(--cc-ink-500)' }}>{riskIdx} / {RISK_EVENTS.length}</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr 82px 78px', gap: 12, padding: '8px 16px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-100)', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
+            <div className="cc-risk-header" style={{ padding: '8px 16px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-100)', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
               <span>Token</span>
               <span>Risk check</span>
               <span>Score</span>
               <span>Status</span>
             </div>
             {RISK_EVENTS.slice(0, riskIdx).map((event) => (
-              <div key={event.token} className="crawl-stream-row" style={{ display: 'grid', gridTemplateColumns: '150px 1fr 82px 78px', gap: 12, padding: '9px 16px', borderBottom: '1px solid var(--cc-ink-100)', alignItems: 'center' }}>
+              <div key={event.token} className="cc-risk-row crawl-stream-row" style={{ padding: '9px 16px', borderBottom: '1px solid var(--cc-ink-100)', alignItems: 'center' }}>
                 <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 12, color: 'var(--cc-ink-900)' }}>{event.token}</span>
                 <span style={{ fontSize: 12, color: 'var(--cc-ink-700)' }}>{event.risk}</span>
                 <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 12, fontWeight: 700, color: event.status === 'fail' ? '#B91C1C' : event.status === 'warn' ? '#B45309' : '#047857' }}>{event.score.toFixed(2)}</span>
@@ -241,9 +241,9 @@ export default function ExtractionWorkspace() {
         )}
 
         {tab === 'ocr' && (
-          <div style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, overflow: 'hidden' }}>
+          <div className="cc-table-scroll" style={{ background: 'white', border: '1px solid var(--cc-ink-200)', borderRadius: 14, overflow: 'auto' }}>
             {/* OCR diff header */}
-            <div style={{ display: 'grid', gridTemplateColumns: '28px 1fr 1fr 1fr 56px', gap: 12, padding: '10px 16px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-200)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
+            <div className="cc-ocr-header" style={{ display: 'grid', gridTemplateColumns: '28px 1fr 1fr 1fr 56px', gap: 12, padding: '10px 16px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-200)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
               <span />
               <span>Qwen2-VL</span>
               <span>Tesseract</span>

@@ -49,17 +49,17 @@ export default function BenchmarkDashboard() {
 
   return (
     <WorkspaceShell breadcrumbs={[{ label: 'Benchmark' }]}>
-      <div className="px-10 py-8 pb-20" style={{ maxWidth: 1440 }}>
-        <div className="mb-6 flex items-end justify-between gap-6">
+      <div className="cc-page">
+        <div className="cc-page-header">
           <div>
-            <h1 className="text-[32px] font-semibold tracking-[-0.02em] text-cc-ink-950" style={{ fontFamily: 'var(--cc-font-display)' }}>
+            <h1 className="cc-page-title text-[32px]">
               Benchmark Dashboard
             </h1>
             <p className="mt-1.5 text-cc-ink-500">
               Reproducible per-stage evaluation for the legal evidence compiler. Accuracy is measured before the demo claims it.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="cc-actions">
             {!running || done ? (
               <button
                 onClick={start}
@@ -101,7 +101,7 @@ export default function BenchmarkDashboard() {
           </div>
         </div>
 
-        <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className="cc-kpi-grid mb-6">
           {[
             { label: 'Metrics passed', value: `${summary.pass}/${metrics.length || BENCHMARK_METRICS.length}`, color: '#047857' },
             { label: 'Avg lift vs baseline', value: `${summary.avgLift.toFixed(1)} pts`, color: '#1D4ED8' },
@@ -117,7 +117,7 @@ export default function BenchmarkDashboard() {
           ))}
         </div>
 
-        <div className="grid gap-5" style={{ gridTemplateColumns: '1fr 420px' }}>
+        <div className="cc-two-col">
           <section className="rounded-2xl border border-cc-ink-200 bg-white">
             <div className="flex items-center gap-3 border-b border-cc-ink-200 px-5 py-4">
               <Gauge size={17} className="text-cc-teal-600" />
@@ -187,7 +187,7 @@ function MetricRow({ metric }: { metric: BenchmarkMetric }) {
   const targetHit = lowerIsBetter ? metric.value <= metric.target : metric.value >= metric.target
 
   return (
-    <div className="grid grid-cols-[220px_1fr_92px] gap-5 px-5 py-4">
+    <div className="benchmark-metric-row px-5 py-4">
       <div>
         <div className="flex items-center gap-2">
           <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${STATUS_CLASS[metric.status]}`}>{metric.status}</span>

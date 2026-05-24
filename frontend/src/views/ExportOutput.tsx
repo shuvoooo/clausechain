@@ -158,8 +158,8 @@ export default function ExportOutput() {
     <WorkspaceShell breadcrumbs={[{ label: 'Pipeline' }, { label: 'Export Output' }]}>
       <PipelineStepper activeId="export" />
 
-      <div style={{ padding: '20px 32px 60px' }}>
-        <div style={{ marginBottom: 16, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24 }}>
+      <div className="cc-page cc-pipeline-page">
+        <div className="cc-page-header" style={{ alignItems: 'flex-start', marginBottom: 16 }}>
           <div>
             <h1 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 700, fontSize: 24, color: 'var(--cc-ink-950)', margin: 0 }}>
               Export Output
@@ -169,7 +169,7 @@ export default function ExportOutput() {
               {' '}· evidence-based RDTII export · predicate + source-status schema
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className="cc-actions">
             {[
               ['JSON', 'run-SG-PDPA-001.json', json],
               ['CSV', 'run-SG-PDPA-001.csv', csv],
@@ -186,7 +186,7 @@ export default function ExportOutput() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: 10, marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 18px', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: 10, marginBottom: 20, flexWrap: 'wrap' }}>
           <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#10B981', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
             <PackageCheck size={13} color="white" />
           </span>
@@ -195,7 +195,7 @@ export default function ExportOutput() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 14, marginBottom: 24 }}>
+        <div className="cc-kpi-grid-five" style={{ gap: 14, marginBottom: 24 }}>
           {[
             ['Records', records.length, 'var(--cc-ink-900)'],
             ['P6/P7 records', records.filter((record) => record.rdtii_indicator.startsWith('6') || record.rdtii_indicator.startsWith('7')).length, '#047857'],
@@ -210,7 +210,7 @@ export default function ExportOutput() {
           ))}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid var(--cc-ink-200)' }}>
+        <div className="cc-export-tabs">
           {(['records', 'json', 'csv', 'provenance'] as Tab[]).map((item) => (
             <button
               key={item}
@@ -242,8 +242,8 @@ export default function ExportOutput() {
         </div>
 
         {tab === 'records' ? (
-          <div style={{ border: '1px solid var(--cc-ink-200)', borderTop: 'none', borderRadius: '0 0 14px 14px', overflow: 'hidden', background: 'white' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '160px 120px 1fr 120px 110px 110px', gap: 12, padding: '10px 20px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-200)', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
+          <div className="cc-table-scroll" style={{ border: '1px solid var(--cc-ink-200)', borderTop: 'none', borderRadius: '0 0 14px 14px', overflow: 'auto', background: 'white' }}>
+            <div className="cc-export-record-row" style={{ padding: '10px 20px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-200)', fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>
               <span>Record</span>
               <span>Indicator</span>
               <span>Predicate</span>
@@ -265,7 +265,8 @@ export default function ExportOutput() {
                       }
                       return next
                     })}
-                    style={{ display: 'grid', gridTemplateColumns: '160px 120px 1fr 120px 110px 110px', gap: 12, width: '100%', padding: '14px 20px', alignItems: 'start', border: 'none', background: 'white', cursor: 'pointer', textAlign: 'left' }}
+                    className="cc-export-record-row"
+                    style={{ width: '100%', padding: '14px 20px', alignItems: 'start', border: 'none', background: 'white', cursor: 'pointer', textAlign: 'left' }}
                   >
                     <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--cc-font-mono)', fontSize: 12, color: 'var(--cc-ink-900)' }}>
                       {open ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
@@ -284,7 +285,7 @@ export default function ExportOutput() {
                     <span style={{ fontFamily: 'var(--cc-font-mono)', fontSize: 11, color: 'var(--cc-ink-600)' }}>{record.citation.span_sha256}</span>
                   </button>
                   {open && (
-                    <div style={{ padding: '0 20px 16px 300px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <div className="cc-export-details">
                       <div style={{ border: '1px solid var(--cc-ink-200)', borderRadius: 12, background: 'var(--cc-ink-50)', padding: 12 }}>
                         <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)', marginBottom: 8 }}>Citation object</p>
                         <pre style={{ margin: 0, fontSize: 11, lineHeight: 1.55, whiteSpace: 'pre-wrap', fontFamily: 'var(--cc-font-mono)', color: 'var(--cc-ink-800)' }}>{JSON.stringify(record.citation, null, 2)}</pre>

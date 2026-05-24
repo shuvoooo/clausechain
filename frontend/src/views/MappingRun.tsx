@@ -62,8 +62,8 @@ export default function MappingRun() {
     <WorkspaceShell breadcrumbs={[{ label: 'Pipeline' }, { label: 'Mapping Run' }]}>
       <PipelineStepper activeId="predicate" />
 
-      <div style={{ padding: '24px 32px 80px', maxWidth: 1440 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 16 }}>
+      <div className="cc-page cc-pipeline-page">
+        <div className="cc-page-header" style={{ marginBottom: 16 }}>
           <div>
             <h1 style={{ fontFamily: 'var(--cc-font-display)', fontWeight: 700, fontSize: 32, color: 'var(--cc-ink-950)', margin: 0, letterSpacing: '-0.02em' }}>
               Mapping Run
@@ -74,7 +74,7 @@ export default function MappingRun() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div className="cc-actions">
             <div style={{ display: 'flex', gap: 4, background: 'var(--cc-ink-100)', borderRadius: 10, padding: 3 }}>
               {(['L0', 'L1', 'L2', 'L3'] as const).map((level) => (
                 <button
@@ -126,9 +126,9 @@ export default function MappingRun() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 20, alignItems: 'start' }}>
+        <div className="cc-mapping-layout">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
+            <div className="cc-kpi-grid-five">
               {[
                 { label: 'Verified', val: stats.verified, color: '#047857', bg: '#ECFDF5', border: '#10B98140' },
                 { label: 'Rejected', val: stats.rejected, color: '#B91C1C', bg: '#FEF2F2', border: '#EF444440' },
@@ -156,7 +156,8 @@ export default function MappingRun() {
                 <span style={{ fontSize: 12, color: 'var(--cc-ink-500)' }}>{streamIdx} / {MAPPING_STREAM.length} processed</span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '96px 1fr 96px 142px 90px', gap: 12, padding: '8px 16px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-200)' }}>
+              <div className="cc-table-scroll">
+              <div className="cc-mapping-stream-header" style={{ display: 'grid', gap: 12, padding: '8px 16px', background: 'var(--cc-ink-50)', borderBottom: '1px solid var(--cc-ink-200)' }}>
                 {['Clause', 'Predicate / evidence', 'RDTII', '8 gates', 'Outcome'].map((heading) => (
                   <div key={heading} style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--cc-ink-500)' }}>{heading}</div>
                 ))}
@@ -170,6 +171,7 @@ export default function MappingRun() {
                   onClick={() => setSelectedRow(selectedRow === row.id ? null : row.id)}
                 />
               ))}
+              </div>
 
               {visible.length === 0 && (
                 <div style={{ padding: '56px 0', textAlign: 'center', color: 'var(--cc-ink-400)', fontSize: 13 }}>
@@ -256,7 +258,7 @@ export default function MappingRun() {
                   )}
                 </div>
                 {selected.predicate ? (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div className="cc-card-grid-2" style={{ gap: 8 }}>
                     {[
                       ['Subject', selected.predicate.subject],
                       ['Action', selected.predicate.action],
@@ -290,7 +292,6 @@ function MappingRow({ row, selected, onClick }: { row: MappingClause; selected: 
     <div
       className={`mapping-row ${row.status === 'rejected' ? 'mr-rejected' : ''}`}
       style={{
-        gridTemplateColumns: '96px 1fr 96px 142px 90px',
         background: selected ? 'var(--cc-teal-50)' : undefined,
       }}
       onClick={onClick}

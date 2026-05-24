@@ -1,5 +1,10 @@
-import { redirect } from 'next/navigation'
+import ProtectedRoute from '@/components/ProtectedRoute'
+import SourceLibrary from '@/views/SourceLibrary'
 
 export default function JurisdictionsIndexPage() {
-  redirect('/dashboard')
+  return (
+    <ProtectedRoute>
+      <SourceLibrary />
+    </ProtectedRoute>
+  )
 }
