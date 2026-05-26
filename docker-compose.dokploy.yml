@@ -1,0 +1,90 @@
+services:
+
+  # ── Django backend ────────────────────────────────────────────────────────
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    networks:
+      - dokploy-network
+    environment:
+      ENVIRONMENT: production
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY is required}
+      JWT_SIGNING_KEY: ${JWT_SIGNING_KEY:?JWT_SIGNING_KEY is required}
+      DB_NAME: ${DB_NAME:-clausechain_db}
+      DB_USER: ${DB_USER:-clausechain}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      DB_HOST: ${DB_HOST:?DB_HOST is required}
+      DB_PORT: ${DB_PORT:-5432}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      USE_REDIS: "true"
+      # Accept full connection strings directly — required when managed Redis has a password
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:?CELERY_BROKER_URL is required}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-${CELERY_BROKER_URL}}
+      REDIS_CACHE_LOCATION: ${REDIS_CACHE_LOCATION:-${CELERY_BROKER_URL}}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:?ALLOWED_HOSTS is required}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost}
+      SECURE_SSL_REDIRECT: "false"
+    volumes:
+      - backend_media:/app/media
+      - backend_static:/app/staticfiles
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' http://localhost:80/ | grep -qE '^[234]'" ]
+      interval: 15s
+      timeout: 10s
+      start_period: 90s
+      retries: 5
+
+  # ── Celery worker ─────────────────────────────────────────────────────────
+  celery:
+    build: ./backend
+    command: celery -A clausechain worker --loglevel=info --concurrency=2
+    restart: unless-stopped
+    networks:
+      - dokploy-network
+    environment:
+      ENVIRONMENT: production
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY is required}
+      JWT_SIGNING_KEY: ${JWT_SIGNING_KEY:?JWT_SIGNING_KEY is required}
+      DB_NAME: ${DB_NAME:-clausechain_db}
+      DB_USER: ${DB_USER:-clausechain}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      DB_HOST: ${DB_HOST:?DB_HOST is required}
+      DB_PORT: ${DB_PORT:-5432}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL:?CELERY_BROKER_URL is required}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-${CELERY_BROKER_URL}}
+      SECURE_SSL_REDIRECT: "false"
+    volumes:
+      - backend_media:/app/media
+    healthcheck:
+      test: [ "CMD-SHELL", "celery -A clausechain inspect ping -d celery@$$HOSTNAME --timeout 5 > /dev/null 2>&1 || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+
+  # ── Next.js frontend ──────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+      args:
+        BACKEND_URL: ${BACKEND_URL:-http://backend:80}
+    restart: unless-stopped
+    networks:
+      - dokploy-network
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      # Server-side rewrites in next.config.ts use this to reach the backend
+      BACKEND_URL: ${BACKEND_URL:-http://backend:80}
+      NEXT_PUBLIC_CLAUSECHAIN_DEMO_AUTH: ${NEXT_PUBLIC_CLAUSECHAIN_DEMO_AUTH:-"false"}
+
+volumes:
+  backend_media:
+  backend_static:
+
+networks:
+  dokploy-network:
+    external: true

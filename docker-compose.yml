@@ -1,0 +1,140 @@
+services:
+
+  # ── Database ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: clausechain_db
+      POSTGRES_USER: clausechain
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clausechain -d clausechain_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Cache / Broker ────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Django backend ────────────────────────────────────────────────────────
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: production
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY is required}
+      JWT_SIGNING_KEY: ${JWT_SIGNING_KEY:?JWT_SIGNING_KEY is required}
+      DB_NAME: clausechain_db
+      DB_USER: clausechain
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      USE_REDIS: "true"
+      CELERY_BROKER_URL: redis://redis:6379/2
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost}
+      SECURE_SSL_REDIRECT: "false"
+    volumes:
+      - backend_media:/app/media
+      - backend_static:/app/staticfiles
+    healthcheck:
+      # Django has no route at /; accept any HTTP response (2xx/3xx/4xx) as healthy
+      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' http://localhost:80/ | grep -qE '^[234]'"]
+      interval: 15s
+      timeout: 10s
+      start_period: 90s
+      retries: 5
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cc-backend.rule=PathPrefix(`/api/`) || PathPrefix(`/media/`)"
+      - "traefik.http.routers.cc-backend.priority=10"
+      - "traefik.http.routers.cc-backend.entrypoints=web"
+      - "traefik.http.services.cc-backend.loadbalancer.server.port=80"
+
+  # ── Celery worker ─────────────────────────────────────────────────────────
+  celery:
+    build: ./backend
+    command: celery -A clausechain worker --loglevel=info --concurrency=2
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: production
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?DJANGO_SECRET_KEY is required}
+      JWT_SIGNING_KEY: ${JWT_SIGNING_KEY:?JWT_SIGNING_KEY is required}
+      DB_NAME: clausechain_db
+      DB_USER: clausechain
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      CELERY_BROKER_URL: redis://redis:6379/2
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      SECURE_SSL_REDIRECT: "false"
+    volumes:
+      - backend_media:/app/media
+    healthcheck:
+      # Celery doesn't run a web server; just verify the process is alive
+      test: ["CMD-SHELL", "celery -A clausechain inspect ping -d celery@$$HOSTNAME --timeout 5 > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+
+  # ── Next.js frontend ──────────────────────────────────────────────────────
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      # Used by Next.js server for SSR → backend API calls (rewrites in next.config.ts)
+      BACKEND_URL: http://backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cc-frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.cc-frontend.priority=1"
+      - "traefik.http.routers.cc-frontend.entrypoints=web"
+      - "traefik.http.services.cc-frontend.loadbalancer.server.port=3000"
+
+  # ── Reverse proxy (entry point) ───────────────────────────────────────────
+  traefik:
+    image: traefik:v3
+    restart: unless-stopped
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=clausechain_default"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "${HOST_PORT:-8090}:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  postgres_data:
+  backend_media:
+  backend_static:
