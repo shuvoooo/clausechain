@@ -42,6 +42,7 @@ const Register = () => {
   const [challengeLoading, setChallengeLoading] = useState(true)
   const [challengeRefreshing, setChallengeRefreshing] = useState(false)
   const [challengeError, setChallengeError] = useState('')
+  const [submitCooldown, setSubmitCooldown] = useState(0)
 
   const { register, resendVerificationEmail, isAuthenticated, loading: authLoading } = useAuth()
   const { registerBannerUrl } = useBranding()
@@ -65,6 +66,12 @@ const Register = () => {
         ...current,
         captcha_answer: '',
       }))
+      // Enforce the backend's minimum age requirement on the client side so
+      // instant-autofill submissions (password managers) never hit the server's
+      // token-too-young rejection and see the generic error message.
+      if ((response.minimum_submit_seconds ?? 0) > 0) {
+        setSubmitCooldown(response.minimum_submit_seconds)
+      }
     } catch {
       setSignupChallenge(null)
       setChallengeError('Could not load signup protection. Refresh the form and try again.')
@@ -104,6 +111,18 @@ const Register = () => {
 
     return () => window.clearInterval(timerId)
   }, [resendCooldown])
+
+  useEffect(() => {
+    if (submitCooldown <= 0) {
+      return undefined
+    }
+
+    const timerId = window.setInterval(() => {
+      setSubmitCooldown((current) => (current > 1 ? current - 1 : 0))
+    }, 1000)
+
+    return () => window.clearInterval(timerId)
+  }, [submitCooldown])
 
   if (isAuthenticated) return null
 
@@ -388,13 +407,18 @@ const Register = () => {
 
                       <button
                         type="submit"
-                        disabled={loading || challengeLoading || !signupChallenge?.registration_token}
+                        disabled={loading || challengeLoading || !signupChallenge?.registration_token || submitCooldown > 0}
                         className="mt-1 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-semibold text-primary-foreground shadow-[0_4px_16px_rgb(var(--theme-primary-rgb)/0.3)] transition hover:bg-primary/90 disabled:opacity-50"
                       >
                         {loading ? (
                           <>
                             <LoaderCircle className="h-4 w-4 animate-spin" />
                             Creating account…
+                          </>
+                        ) : submitCooldown > 0 ? (
+                          <>
+                            <LoaderCircle className="h-4 w-4 animate-spin" />
+                            Ready in {submitCooldown}s…
                           </>
                         ) : (
                           <>

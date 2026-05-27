@@ -21,7 +21,9 @@ services:
       # Accept full connection strings directly — required when managed Redis has a password
       CELERY_BROKER_URL: ${CELERY_BROKER_URL:?CELERY_BROKER_URL is required}
       CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND:-${CELERY_BROKER_URL}}
-      REDIS_CACHE_LOCATION: ${REDIS_CACHE_LOCATION:-${CELERY_BROKER_URL}}
+      # Keep the cache on its own Redis DB (default /1) — do NOT fall back to the
+      # Celery broker URL or cache keys can collide with broker messages.
+      REDIS_CACHE_LOCATION: ${REDIS_CACHE_LOCATION:-redis://${REDIS_HOST:-redis}:${REDIS_PORT:-6379}/1}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:?ALLOWED_HOSTS is required}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost}
       SECURE_SSL_REDIRECT: "false"
