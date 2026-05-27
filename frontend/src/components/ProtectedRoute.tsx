@@ -7,9 +7,7 @@ import { useAuth } from '@/contexts/AuthContext'
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   const router = useRouter()
-  const demoModeEnabled =
-    process.env.NEXT_PUBLIC_CLAUSECHAIN_DEMO_AUTH === 'true' ||
-    (process.env.NEXT_PUBLIC_CLAUSECHAIN_DEMO_AUTH !== 'false' && process.env.NODE_ENV === 'development')
+  const demoModeEnabled = process.env.NEXT_PUBLIC_CLAUSECHAIN_DEMO_AUTH !== 'false'
 
   useEffect(() => {
     if (!demoModeEnabled && !loading && !user) router.replace('/login')
