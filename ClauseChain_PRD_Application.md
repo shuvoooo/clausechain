@@ -7,17 +7,37 @@
 | Document type | Product Requirements Document |
 | Product | ClauseChain |
 | Version | 1.0 |
-| Status | Hackathon proposal + prototype build specification |
-| Date | 24 May 2026 |
+| Status | Round 0 application (shortlisted). **Superseded for Round 1 build by `ClauseChain_Round1_Build_Guide.md` + `ClauseChain_Legal_Matching_DoDont.md` — see Round 1 Addendum below.** |
+| Date | 24 May 2026 · Round 1 addendum 7 June 2026 |
 | Initiative | UN Global Hackathon: AI for Digital Trade Regulatory Analysis |
 | Framework | UN Regional Digital Trade Integration Index (RDTII) v2.1 |
 | Mandatory scope | Pillar 6: Cross-Border Data Policies; Pillar 7: Domestic Data Protection and Privacy |
-| Bonus scope | RDTII Pillar 8 (Cybersecurity), Pillar 9 (Digital identity), Pillar 12 (Content) — finals only |
-| Demo instruments | SG PDPA 2012 (rev. 2021) ss. 13, 17, 26(1); TH PDPA B.E. 2562 (2019) ss. 26–29; BD Personal Data Protection Act 2026 + National Data Management Act 2026 + Cyber Protection Act 2026 |
+| Bonus scope | One bonus pillar (Pillar 2 Public Procurement **or** Pillar 8 Intermediary Liability) + Zone 3 scoring (0–1) — extra points. *(Note: "cybersecurity" is indicator 7.2, not a separate pillar.)* |
+| Demo instruments | **Round 1:** SG PDPA 2012 (rev. 2021) ss. 13, 24, 26(1) + Cybersecurity Act 2018; AU Privacy Act 1988; MY PDPA 2010 (Act 709). *(Thailand/Bangladesh instruments cited later in this doc are illustrative only — see Round 1 Addendum.)* |
 | Model routing | Local-first (vLLM + Qwen/Llama family) with optional per-task cloud routing to OpenAI or Anthropic |
 | Minimum footprint | 1× L40S 48 GB / 64 GB RAM / 500 GB SSD (local mode) · or CPU-only + cloud APIs (laptop mode) |
 | License target | Apache 2.0 codebase; documented third-party model licenses (matrix in §21) |
 | Core thesis | Verified citation is necessary but not sufficient. ClauseChain verifies citation, authority, currentness, legal structure, predicate meaning, and counter-evidence before producing an RDTII mapping. |
+
+---
+
+## ⚠️ Round 1 Retargeting Addendum (7 June 2026 — read first)
+
+This PRD is the **Round 0 application** that earned ClauseChain's shortlist; its architecture and thesis stand. But the post-shortlist workshops (1 / 4 / 5 June) corrected several specifics. The **operative Round-1 documents are now `ClauseChain_Round1_Build_Guide.md`** (architecture + phase plan) **and `ClauseChain_Legal_Matching_DoDont.md`** (legal-matching rules + example bank). Where the body below conflicts, **this table governs:**
+
+| Topic | This PRD (Round 0) says | **Round 1 truth (governs)** |
+|---|---|---|
+| **Economies** | Singapore, Thailand, Bangladesh | **Singapore, Australia, Malaysia** (Round 1, all English). Thailand is a *final-round* economy; Bangladesh is *not on the list*. All TH/BD content below is **architecture illustration only**, retargeted to AU/MY. |
+| **Indicator codes** | placeholder `6.x`; our own rubric names (`transfer_restriction`, `data_protection_framework`) | **`P6-I1…P7-I5` = the RDTII 2.1 methodology indicators, 1:1** (P6-I1 = 6.1 ban/local-processing · 6.2 local storage · 6.3 infrastructure · 6.4 conditional flow; P7 = 7.1 comprehensive DP framework · 7.2 cybersecurity · 7.3 retention · 7.4 DPIA/DPO · 7.5 gov access). **`P6-I5`=6.5 is non-regulatory → engine extracts 9 indicators (P6-I1…I4 + P7-I1…I5).** |
+| **Output schema** | the §12 minimum-citation object | the **exact `OUTPUT_TEMPLATE_31MAY.xlsx` columns** (CSV) + a JSON envelope; our object maps onto it and adds **`Discovery Tag` (NEW/KNOWN)**, **`Coverage` (Horizontal/Sectoral)**, **`Last Amended`**. |
+| **Bonus scope** | "Pillar 8 (Cybersecurity)", Pillar 2 Bangladesh procurement | cybersecurity is indicator **7.2** (not a pillar). One bonus pillar = **Pillar 2 or Pillar 8** for SG/AU/MY (not Bangladesh) + **Zone 3 scoring (0–1)**. |
+| **NEW-evidence discovery** | not present | **the single largest scoring lever (20 of 40)** — autonomous discovery + NEW/KNOWN diff at **(instrument + article)** granularity. |
+| **Judged artifact** | working UI prototype | a **runnable CLI engine** (`run.py --country SG --pillar 6` → CSV+JSON, no manual steps) — confirmed required. UI is the *extra-mile*. |
+| **Scoring weights** | per-stage metrics (internal) | the rubric is **40 % substantive · 30 % technical · 30 % architecture**; Zone 3 (RDTII 0–1 score) is optional bonus. |
+| **Post-8-June updates (11 Jun, final)** | not present | **10 June mail:** master dataset = **primary** NEW/KNOWN baseline; 384-row Legal Inventory CSV = secondary (seeds/validation); Q&A questions by email **before 15 Jun**. **Official Zone-3 scoring criteria + P6 weights + P7 polarity** → Build Guide §7.1 / DoDont §9.1. **Graph storage** → swappable `GraphStore` (SQLite default, Neo4j optional) per GraphRAG Strategy §12. **Team executes from `ClauseChain_Dev_Plan_and_Task_Distribution.md` (guiding star).** |
+| **Post-22-June updates (final scope)** | — | **Strategy = core-first, Round-2 additive:** SG/AU/MY flawless & frozen first (extra economies score **0** in Round 1), THEN the 7 Round-2 finals economies (CN/IN/ID/LA/MN/RU/TH) as an additive track — they can't be done in the 1-week round gap. **Model default → local/cheap, cloud opt-in** (cost-efficiency + speed are scored). **Output:** additional columns allowed (Coverage / Verbatim-English / Status), Location Reference optional, ONE consolidated file, NEW = provision-level. **Zone-3 = noise audit** (multi-persona judges → uncertainty band). **Retrieval = broad recall, not top-k.** **Round-2 gold DB** = finals KNOWN/eval baseline. Operating model: you (lead/verify) + Claude (executes). **Full changelog: Dev Plan §0.** |
+
+Everything else carries forward **unchanged and validated** by the workshops: the eight verification gates, the legal predicate tuple, the authority/currentness resolver, the evidence ledger (now framed as **GraphRAG**), modular local/cloud provider routing, OCR rigor (CER < 5 %), and the human-in-the-loop audit trail.
 
 ---
 
@@ -33,7 +53,7 @@
 2. **Eight verification gates (G1–G8).** Span, location, authority, currentness, structure, tuple support, RDTII predicate support, and counter-evidence search. Any failure rejects or routes to human review.
 3. **Per-stage measured accuracy.** Discovery recall, OCR CER, section-boundary F1, retrieval recall@k, tuple field accuracy, macro-F1, citation exactness, and abstention calibration — all reported with confidence intervals.
 
-**Demo coverage.** Singapore (clean HTML benchmark), Thailand (bilingual rule/exception), Bangladesh (scanned OCR + status-conflict stress). English, Thai, Bengali.
+**Demo coverage (Round 1).** Singapore (clean official HTML benchmark), Australia (Federal Register, amendment tracking), Malaysia (the "harder" economy — scanned gazettes + OCR stress, error-checking + new-data collection). All English. *(The Thailand/Bengali examples elsewhere in this document illustrate the multilingual/OCR architecture and apply to final-round economies — see the Round 1 Addendum.)*
 
 **Deployment modes.** (1) **Local** — vLLM + Qwen / Llama on a single L40S. (2) **Cloud** — OpenAI or Anthropic per-task routing, no GPU required. (3) **Hybrid** — local for embeddings and OCR, cloud for high-stakes classification and verification. All target documents are public legal text scraped from official portals, so operators may choose any mix without privacy risk to data subjects. Provider routing is configurable per pipeline task (§6.4.1).
 
@@ -106,7 +126,7 @@ ClauseChain is an open-source AI system for mapping digital trade regulations to
 
 Its distinguishing feature is not only citation verification. ClauseChain verifies the whole legal evidence chain: source authority, current-law status, document structure, exact quoted span, legal predicate meaning, and counter-evidence. The model is not allowed to produce free-form legal conclusions. It fills constrained schemas, extracts actor-action-object-condition tuples, and maps those tuples to RDTII indicators only after verification gates pass. If the system cannot prove a claim, it abstains or routes it to human review.
 
-The demo focuses on Bangladesh, Thailand, and Singapore, covering English, Bengali, and Thai; official HTML; native PDFs; scanned amendments; and non-binding guidelines. ClauseChain ships with a reproducible benchmark pack: labeled clauses, negative examples, OCR stress cases, evaluation scripts, and per-stage accuracy metrics. The codebase is Apache 2.0, self-hostable, and model-provider agnostic.
+The Round 1 demo focuses on Singapore, Australia, and Malaysia (all English), covering official HTML, native PDFs, scanned gazettes/amendments, and non-binding guidelines; the multilingual path (Thai/Bengali/etc.) is built into the architecture for final-round economies. ClauseChain ships with a reproducible benchmark pack: labeled clauses, negative examples, OCR stress cases, evaluation scripts, and per-stage accuracy metrics. The codebase is Apache 2.0, self-hostable, and model-provider agnostic.
 
 ### 3.3 Problem Understanding
 
@@ -126,7 +146,7 @@ Commercial legal-AI products (LexisNexis Protégé, Harvey, Spellbook, Casetext)
 
 ### 4.1 Mandatory Scope
 
-ClauseChain focuses on the two mandatory policy areas plus two bonus pillars, one of which is scoped specifically to Bangladesh:
+ClauseChain focuses on the two mandatory policy areas (Pillars 6 & 7, for **Singapore / Australia / Malaysia**) plus **one optional bonus pillar** (Pillar 2 **or** Pillar 8) for extra points. *(Round 1 correction: the "two bonus pillars, one scoped to Bangladesh" framing below is superseded — Bangladesh is out of scope; pick a single bonus pillar for SG/AU/MY. See the Round 1 Addendum.)*
 
 - **RDTII Pillar 6 — Cross-Border Data Policies:** cross-border transfer restrictions, data localization, domestic processing/storage requirements, adequacy/comparability conditions, regulator approval, conditional transfer pathways.
 - **RDTII Pillar 7 — Domestic Data Protection and Privacy:** personal data protection frameworks, lawful basis, purpose limitation, data subject rights, retention limits, breach notification, compliance obligations, regulator powers, government access safeguards.
@@ -1377,16 +1397,16 @@ Every claim should display compact status badges so a reviewer can scan risk qui
 
 ### 15.1 Must Have for Application Prototype
 
-- Jurisdiction packs for SG, TH, and BD with ≥ 5 official source domains each and a complete authority hierarchy.
-- Ingest **≥ 3 official HTML sources** end to end (one per jurisdiction); at minimum SG PDPA 2012, TH PDPA B.E. 2562, BD Personal Data Protection Act 2026.
-- Ingest **≥ 1 scanned legal page per jurisdiction** with text + bbox + per-token OCR confidence emitted.
-- Build legal node tree for **at least one full instrument per jurisdiction** (target: SG PDPA, TH PDPA, BD DSA).
+- Jurisdiction packs for **SG, AU, and MY** with ≥ 5 official source domains each and a complete authority hierarchy.
+- Ingest **≥ 3 official HTML sources** end to end (one per jurisdiction); at minimum SG PDPA 2012, AU Privacy Act 1988, MY PDPA 2010 (Act 709).
+- Ingest **≥ 1 scanned legal page per jurisdiction** with text + bbox + per-token OCR confidence emitted (Malaysia gazettes are the OCR-stress case).
+- Build legal node tree for **at least one full instrument per jurisdiction** (target: SG PDPA, AU Privacy Act, MY PDPA).
 - Build rule units for **≥ 10 provisions containing exceptions/conditions** across the three jurisdictions.
 - Hybrid retrieval (BM25 + multilingual dense) plus reranking, with retrieval recall@20 ≥ 0.85 on the prototype benchmark.
 - Legal predicate tuple extraction with **field-level accuracy ≥ 0.75** on the prototype benchmark.
-- RDTII mapping for Pillars 6 and 7 with **macro-F1 ≥ 0.70** on a ≥ 50-example labeled benchmark.
-- Verification gates G1–G8 implemented and exercised by every shipped claim.
-- Export JSONL, CSV, and provenance bundle; outputs re-verifiable from raw bytes.
+- RDTII mapping for Pillars 6 and 7 using the **methodology indicators `P6-I1…I4` + `P7-I1…I5`** (= 6.1…6.4 / 7.1…7.5; P6-I5 non-regulatory), with **macro-F1 ≥ 0.70** on a ≥ 50-example labeled benchmark.
+- Verification gates G1–G8 implemented and exercised by every shipped claim, including a **Discovery Tag (NEW/KNOWN)** on every row.
+- Export to the **exact `OUTPUT_TEMPLATE_31MAY.xlsx` CSV schema** + JSON envelope + provenance bundle; outputs re-verifiable from raw bytes.
 - Reproducible benchmark script with ≥ 50 labeled examples (≥ 10 negatives, ≥ 5 OCR fuzzy cases, ≥ 5 amendment/repeal cases) and per-stage metrics with bootstrap confidence intervals.
 - Working audit UI (already prototyped at `/pipeline/*`) showing span, source status, tuple, gates, and reviewer action.
 - Model routing config (§6.4.1) operational with at least `always_local` and one cloud provider tested end-to-end.
